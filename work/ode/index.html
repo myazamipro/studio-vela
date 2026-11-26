@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ode — architecture that holds the light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{background:#ECE9E2}
+:root{--ink:#171512;--mute:#6E685E;--line:rgba(23,21,18,.14);--stone:#ECE9E2;--d:"Cormorant Garamond",Georgia,serif;--b:"Inter Tight",system-ui,sans-serif;--e:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;color:var(--ink);font-family:var(--b);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}p{margin:0}img{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--d);font-weight:500;margin:0;letter-spacing:-.02em}em{font-style:normal;color:inherit!important}
+.wrap{padding-left:clamp(18px,3vw,48px);padding-right:clamp(18px,3vw,48px)}
+header{position:fixed;top:0;left:0;right:0;z-index:30;mix-blend-mode:difference;color:#fff}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:76px;font-size:13.5px}
+.logo{font-family:var(--d);font-size:30px;letter-spacing:-.02em;line-height:1}
+header nav{display:flex;gap:34px}
+header nav a{position:relative}
+header nav a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--e)}
+header nav a:hover::after{transform:scaleX(1);transform-origin:left}
+:focus-visible{outline:1.5px solid var(--ink);outline-offset:3px}
+/* hero */
+.hero{padding-top:clamp(120px,18vh,180px)}
+.hero h1{font-size:clamp(56px,9vw,150px);line-height:.9;letter-spacing:-.035em}
+.hero h1 .l{display:block;overflow:hidden}
+.hero h1 .l span{display:block;transform:translateY(105%);animation:rise 1.4s var(--e) forwards}
+.hero h1 .l:nth-child(2) span{animation-delay:.12s}.hero h1 .l:nth-child(2){padding-left:12vw}
+.hero h1 em{font-style:normal;color:inherit}
+@keyframes rise{to{transform:none}}
+.hmeta{display:flex;justify-content:space-between;align-items:end;gap:2rem;margin-top:44px;flex-wrap:wrap;opacity:0;animation:fade 1.2s .7s var(--e) forwards}
+.hmeta p{max-width:330px;color:var(--mute)}
+.hmeta small{font-size:12.5px;color:var(--mute)}
+@keyframes fade{to{opacity:1}}
+.reveal{position:relative;height:150vh;margin-top:56px}
+.reveal .sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.reveal .frame{width:100%;height:100%;overflow:hidden;will-change:clip-path}
+.reveal img{width:100%;height:100%;object-fit:cover;transform-origin:50% 50%;will-change:transform}
+.reveal .cap{position:absolute;left:clamp(18px,3vw,48px);bottom:28px;color:#fff;font-size:13px;display:flex;gap:24px;mix-blend-mode:difference}
+/* intro */
+.intro{padding-top:clamp(120px,18vh,200px);padding-bottom:clamp(100px,14vh,160px);display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:2rem}
+.intro small{font-size:12.5px;color:var(--mute)}
+.intro p.big{font-family:var(--d);font-size:clamp(34px,3.9vw,62px);line-height:1.06;letter-spacing:-.015em}
+.intro .w{opacity:.16;transition:opacity .2s linear}
+/* horizontal */
+.hz{position:relative;height:420vh;background:#171512;color:#ECE9E2}
+.hz .sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hz .head{display:flex;justify-content:space-between;align-items:end;padding-bottom:30px}
+.hz .head h2{font-size:clamp(44px,5.4vw,88px);line-height:.9}
+.hz .head h2 em{color:#8F877A}
+.hz .head span{font-size:12.5px;color:#8F877A;font-variant-numeric:tabular-nums}
+.track{display:flex;gap:clamp(16px,2vw,28px);padding-left:clamp(18px,3vw,48px);will-change:transform}
+.pj{flex:0 0 auto;width:clamp(300px,38vw,620px)}
+.pj:nth-child(even){width:clamp(240px,27vw,430px);margin-top:9vh}
+.pj .im{overflow:hidden;border-radius:4px;height:58vh}
+.pj:nth-child(even) .im{height:46vh}
+.pj img{width:118%;max-width:none;height:100%;object-fit:cover;will-change:transform}
+.pj .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-size:12.5px;color:#8F877A}
+.pj h3{font-size:clamp(26px,2.2vw,36px);color:#ECE9E2;line-height:1.1}
+.pj .row b{font-weight:400}
+.endcard{flex:0 0 auto;width:clamp(260px,26vw,420px);display:flex;flex-direction:column;justify-content:center;padding-right:clamp(18px,3vw,48px)}
+.endcard p{font-family:var(--d);font-size:clamp(30px,2.8vw,46px);line-height:1.05}
+.endcard a{margin-top:22px;font-size:13.5px;border-bottom:1px solid currentColor;align-self:flex-start;padding-bottom:3px}
+.prog{position:absolute;left:clamp(18px,3vw,48px);right:clamp(18px,3vw,48px);bottom:34px;height:1px;background:rgba(236,233,226,.2)}
+.prog i{position:absolute;left:0;top:0;bottom:0;background:#ECE9E2;width:0}
+/* index */
+.idx{padding-top:clamp(110px,16vh,180px);padding-bottom:clamp(80px,12vh,140px)}
+.idx .top{display:flex;justify-content:space-between;align-items:end;margin-bottom:34px;gap:2rem;flex-wrap:wrap}
+.idx h2{font-size:clamp(48px,6vw,100px);line-height:.9}
+.idx h2 em{color:var(--mute)}
+.idx .top p{max-width:320px;color:var(--mute)}
+.list a{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr) 70px;gap:1rem;align-items:baseline;padding:22px 0;border-top:1px solid var(--line);transition:padding .5s var(--e),color .3s}
+.list a:last-child{border-bottom:1px solid var(--line)}
+.list a:hover{padding-left:18px}
+.list h3{font-size:clamp(28px,2.6vw,42px);line-height:1}
+.list span{font-size:13.5px;color:var(--mute)}
+.list span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+#peek{position:fixed;left:0;top:0;width:300px;height:210px;pointer-events:none;z-index:25;overflow:hidden;border-radius:4px;opacity:0;transform:translate(-50%,-50%) scale(.85);transition:opacity .35s,transform .5s var(--e)}
+#peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#peek img{width:100%;height:100%;object-fit:cover}
+/* studio */
+.studio{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:clamp(24px,4vw,64px);padding-bottom:clamp(110px,16vh,180px);align-items:center}
+.studio .ph{overflow:hidden;border-radius:4px;aspect-ratio:4/5}
+.studio .ph img{width:100%;height:118%;object-fit:cover;will-change:transform}
+.studio h2{font-size:clamp(40px,4.4vw,72px);line-height:.98}
+.studio h2 em{color:var(--mute)}
+.studio p{color:var(--mute);max-width:440px;margin-top:22px}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;max-width:520px}
+.nums div{border-top:1px solid var(--ink);padding-top:12px}
+.nums b{display:block;font-family:var(--d);font-weight:400;font-size:clamp(40px,4vw,64px);line-height:1}
+.nums span{font-size:12.5px;color:var(--mute)}
+/* marquee + footer */
+.mq{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0}
+.mq div{display:flex;gap:56px;width:max-content;font-family:var(--d);font-style:italic;font-size:clamp(28px,3vw,44px);color:var(--mute);white-space:nowrap;will-change:transform}
+footer{background:#171512;color:#ECE9E2;padding-top:clamp(100px,14vh,160px);padding-bottom:30px}
+footer .big{display:block;font-family:var(--d);font-size:clamp(64px,12vw,200px);line-height:.85;letter-spacing:-.045em}
+footer .big em{color:#8F877A}
+footer .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:70px;padding-top:24px;border-top:1px solid rgba(236,233,226,.18);font-size:13.5px}
+footer .cols span{display:block;color:#8F877A;font-size:12px;margin-bottom:8px}
+footer small{display:block;margin-top:48px;font-size:12px;color:#8F877A;max-width:640px}
+@media(max-width:860px){header nav{display:none}.intro,.studio{grid-template-columns:1fr}.list a{grid-template-columns:1fr auto;gap:4px 1rem}.list a span:nth-child(2){grid-column:1/-1;order:3}.list a span:nth-child(3){display:none}footer .cols{grid-template-columns:1fr 1fr}.hero h1 .l:nth-child(2){padding-left:0}.pj{width:78vw}.pj:nth-child(even){width:62vw}#peek{display:none}}
+@media(prefers-reduced-motion:reduce){.hero h1 .l span{animation:none;transform:none}.hmeta{animation:none;opacity:1}.intro .w{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="#top">Ode</a><nav aria-label="Main"><a href="#work">Work</a><a href="#index">Index</a><a href="#studio">Studio</a><a href="#contact">Contact</a></nav><a href="#contact">New project</a></div></header>
+
+<main id="top">
+<section class="hero wrap">
+  <h1><span class="l"><span>Buildings that</span></span><span class="l"><span>hold the <em>light.</em></span></span></h1>
+  <div class="hmeta"><p>Ode is an architecture studio designing homes, hotels and towers around one material: daylight.</p><small>Scroll to enter</small></div>
+</section>
+
+<section class="reveal" aria-label="Featured project">
+  <div class="sticky"><div class="frame" id="rf"><img id="ri" src="img/tower.jpg" alt="A white terraced residential tower with hanging gardens beside a lake at golden hour"></div><div class="cap"><span>Lakeside Residences</span><span>2028</span></div></div>
+</section>
+
+<section class="intro wrap">
+  <small>The studio</small>
+  <p class="big" id="intro">We draw every building twice: once on paper, and once at six in the evening, when the sun is low and the rooms tell you whether they were worth making.</p>
+</section>
+
+<section class="hz" id="work" aria-label="Selected projects">
+  <div class="sticky">
+    <div class="head wrap"><h2>Selected <em>work</em></h2><span id="cnt">01 / 08</span></div>
+    <div class="track" id="track">
+      <article class="pj"><div class="im"><img src="img/halo.jpg" alt="A glowing curved hotel tower at dusk" loading="lazy"></div><div class="row"><h3>Halo Tower</h3><b>Hotel, 2027</b></div></article>
+      <article class="pj"><div class="im"><img src="img/stair.jpg" alt="A double-height living room with a sculpted spiral staircase" loading="lazy"></div><div class="row"><h3>Spiral House</h3><b>Residence, 2026</b></div></article>
+      <article class="pj"><div class="im"><img src="img/lobby.jpg" alt="A hotel lobby with a ribbed bronze stair and a wall of blue glass" loading="lazy"></div><div class="row"><h3>The Lantern</h3><b>Hospitality, 2025</b></div></article>
+      <article class="pj"><div class="im"><img src="img/terrace.jpg" alt="A curved terrace with olive trees and a pool above a city" loading="lazy"></div><div class="row"><h3>Terrace 31</h3><b>Penthouse, 2026</b></div></article>
+      <article class="pj"><div class="im"><img src="img/canopy.jpg" alt="A bronze canopy over a glass hotel entrance at night" loading="lazy"></div><div class="row"><h3>Arrival Court</h3><b>Hotel, 2027</b></div></article>
+      <article class="pj"><div class="im"><img src="img/suite.jpg" alt="A suite with a freestanding bath facing a night skyline" loading="lazy"></div><div class="row"><h3>Night Suite</h3><b>Interior, 2025</b></div></article>
+      <article class="pj"><div class="im"><img src="img/pool.jpg" alt="A rooftop infinity pool under a curved bronze roof" loading="lazy"></div><div class="row"><h3>Sky Pool</h3><b>Hotel, 2027</b></div></article>
+      <article class="pj"><div class="im"><img src="img/fog.jpg" alt="A stone staircase rising out of still water into fog" loading="lazy"></div><div class="row"><h3>Stair in Fog</h3><b>Installation, 2024</b></div></article>
+      <div class="endcard"><p>Every project starts with a walk around the site at sunset.</p><a href="#contact">Start yours</a></div>
+    </div>
+    <div class="prog"><i id="pg"></i></div>
+  </div>
+</section>
+
+<section class="idx wrap" id="index">
+  <div class="top"><h2>Project <em>index</em></h2><p>Hover a project to see it. Forty-two buildings, eleven countries, one way of working.</p></div>
+  <div class="list" id="list">
+    <a href="#work" data-img="img/halo.jpg"><h3>Halo Tower</h3><span>A 42-storey hotel wrapped in curved glass fins.</span><span>Dubai</span><span>2027</span></a>
+    <a href="#work" data-img="img/tower.jpg"><h3>Lakeside Residences</h3><span>84 homes, each with a planted terrace facing west.</span><span>Lisbon</span><span>2028</span></a>
+    <a href="#work" data-img="img/stair.jpg"><h3>Spiral House</h3><span>A private home built around one continuous stair.</span><span>Marrakech</span><span>2026</span></a>
+    <a href="#work" data-img="img/lobby.jpg"><h3>The Lantern</h3><span>A lobby lit from inside a bronze screen.</span><span>Singapore</span><span>2025</span></a>
+    <a href="#work" data-img="img/terrace.jpg"><h3>Terrace 31</h3><span>A penthouse with a pool that runs to the glass edge.</span><span>Barcelona</span><span>2026</span></a>
+    <a href="#work" data-img="img/fog.jpg"><h3>Stair in Fog</h3><span>A temporary installation on a flooded quarry.</span><span>Iceland</span><span>2024</span></a>
+  </div>
+</section>
+
+<div class="mq" aria-hidden="true"><div id="mq"><span>Homes</span><span>Hotels</span><span>Towers</span><span>Interiors</span><span>Installations</span><span>Homes</span><span>Hotels</span><span>Towers</span><span>Interiors</span><span>Installations</span><span>Homes</span><span>Hotels</span><span>Towers</span><span>Interiors</span><span>Installations</span></div></div>
+
+<section class="studio wrap" id="studio" style="padding-top:clamp(110px,16vh,180px)">
+  <div class="ph"><img src="img/stair.jpg" alt="A double-height living room with a sculpted spiral staircase" loading="lazy" data-par></div>
+  <div>
+    <h2>Small studio.<br><em>Long buildings.</em></h2>
+    <p>Twelve architects and two model makers, working from one long table. We take on four new buildings a year so that each one gets the founders' full attention, from the first sketch to the last door handle.</p>
+    <div class="nums"><div><b>42</b><span>buildings completed</span></div><div><b>11</b><span>countries</span></div><div><b>4</b><span>new projects a year</span></div></div>
+  </div>
+</section>
+</main>
+
+<footer id="contact"><div class="wrap">
+  <a class="big" href="#contact">Let's walk<br>your <em>site.</em></a>
+  <div class="cols"><div><span>New projects</span>Book a site visit</div><div><span>Studio</span>Open by appointment</div><div><span>Press</span>Images on request</div><div><span>Follow</span>Instagram, LinkedIn</div></div>
+  <small>Concept website. Ode is a fictional studio; projects, places and figures are illustrative and the images are AI-generated.</small>
+</div></footer>
+<div id="peek" aria-hidden="true"><img alt=""></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,lenis=null;
+if(window.Lenis&&!reduce)lenis=new Lenis({lerp:.075,anchors:true});
+var intro=document.getElementById('intro');intro.innerHTML=intro.textContent.split(' ').map(function(w){return '<span class="w">'+w+'</span>';}).join(' ');
+var ws=[].slice.call(intro.querySelectorAll('.w'));
+var rv=document.querySelector('.reveal'),rf=document.getElementById('rf'),ri=document.getElementById('ri');
+var hz=document.querySelector('.hz'),track=document.getElementById('track'),pg=document.getElementById('pg'),cnt=document.getElementById('cnt'),pjs=[].slice.call(track.querySelectorAll('.pj img'));
+var par=[].slice.call(document.querySelectorAll('[data-par]')),mq=document.getElementById('mq');
+function cl(x){return Math.max(0,Math.min(1,x));}
+function ease(x){return 1-Math.pow(1-x,3);}
+var mqx=0,last=performance.now();
+function frame(now){
+ requestAnimationFrame(frame);if(lenis)lenis.raf(now);
+ var dt=Math.min(.05,(now-last)/1000);last=now;var vh=innerHeight;
+ /* reveal */
+ var r=rv.getBoundingClientRect(),p=cl(-r.top/(rv.offsetHeight-vh)),e=ease(cl(p*1.4));
+ var ix=(1-e)*16,iy=(1-e)*22;rf.style.clipPath='inset('+iy+'% '+ix+'% '+iy+'% '+ix+'% round '+((1-e)*14)+'px)';
+ ri.style.transform='scale('+(1.25-.25*e)+')';
+ /* intro words */
+ var ir=intro.getBoundingClientRect(),ip=cl((vh*.85-ir.top)/(ir.height+vh*.45));var k=ip*ws.length*1.15;ws.forEach(function(w,i){w.style.opacity=Math.max(.16,Math.min(1,k-i));});
+ /* horizontal */
+ var hr=hz.getBoundingClientRect(),hp=cl(-hr.top/(hz.offsetHeight-vh)),max=track.scrollWidth-innerWidth;
+ track.style.transform='translate3d('+(-hp*max)+'px,0,0)';pg.style.width=(hp*100)+'%';
+ cnt.textContent=('0'+Math.min(8,1+Math.floor(hp*8))).slice(-2)+' / 08';
+ pjs.forEach(function(im){var b=im.parentNode.getBoundingClientRect(),c=(b.left+b.width/2)/innerWidth-.5;im.style.transform='translate3d('+(-8-c*10)+'%,0,0)';});
+ /* parallax */
+ par.forEach(function(im){var b=im.parentNode.getBoundingClientRect(),c=(b.top+b.height/2)/vh-.5;im.style.transform='translate3d(0,'+(-8-c*12)+'%,0)';});
+ /* marquee tied to scroll velocity */
+ var v=lenis?Math.abs(lenis.velocity||0):0;mqx-=(40+v*30)*dt;var half=mq.scrollWidth/2;if(-mqx>half)mqx+=half;mq.style.transform='translate3d('+mqx+'px,0,0)';
+}
+requestAnimationFrame(frame);
+/* hover peek */
+var peek=document.getElementById('peek'),pim=peek.querySelector('img'),tx=0,ty=0,px=0,py=0;
+[].forEach.call(document.querySelectorAll('#list a'),function(a){a.addEventListener('mouseenter',function(){pim.src=a.dataset.img;peek.classList.add('on');});a.addEventListener('mouseleave',function(){peek.classList.remove('on');});});
+addEventListener('pointermove',function(e){tx=e.clientX;ty=e.clientY;});
+(function follow(){px+=(tx-px)*.14;py+=(ty-py)*.14;peek.style.left=px+'px';peek.style.top=py+'px';requestAnimationFrame(follow);})();
+})();
+</script>
+<a href="../../index.html#work" style="position:fixed;left:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#141414;color:#fff;font:500 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.2)">&larr; All work</a>
+</body>
+</html>
