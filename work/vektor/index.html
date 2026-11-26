@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vektor — trade the move, not the noise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{background:#07090C}
+:root{--fg:#E8ECF1;--mute:#8A94A6;--dim:#5A6475;--line:rgba(232,236,241,.08);--panel:#0C1016;--up:#1FB37A;--dn:#E5484D;--b:"Geist",system-ui,sans-serif;--m:"Geist Mono",ui-monospace,monospace;--e:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;color:var(--fg);font-family:var(--b);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}p{margin:0}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.035em}
+.num{font-family:var(--m);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.wrap{max-width:1440px;margin:0 auto;padding-left:clamp(18px,3.5vw,56px);padding-right:clamp(18px,3.5vw,56px)}
+.bgglow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(60% 50% at 75% 15%,rgba(43,211,141,.10),transparent 70%),radial-gradient(40% 40% at 10% 90%,rgba(110,139,255,.07),transparent 70%)}
+.gridbg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(70% 60% at 60% 20%,#000 20%,transparent 80%);-webkit-mask-image:radial-gradient(70% 60% at 60% 20%,#000 20%,transparent 80%);opacity:.55}
+header,main,footer{position:relative;z-index:1}
+header{position:sticky;top:0;z-index:20;background:rgba(7,9,12,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:1rem}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px;letter-spacing:-.03em}
+.logo svg{width:22px;height:22px}
+nav.main{display:flex;gap:28px;font-size:14px;color:var(--mute)}nav.main a:hover{color:var(--fg)}
+.hbtns{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font:500 14px var(--b);padding:10px 16px;border:1px solid var(--line);color:var(--fg);background:rgba(255,255,255,.03);cursor:pointer;transition:background .2s,border-color .2s}
+.btn:hover{background:rgba(255,255,255,.07)}
+.btn.go{background:#E8ECF1;border-color:#E8ECF1;color:#07090C}.btn.go:hover{background:#fff}
+:focus-visible{outline:1.5px solid var(--up);outline-offset:2px}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,4vw,64px);align-items:center;padding-top:clamp(40px,7vh,80px);padding-bottom:40px;min-height:calc(100svh - 64px - 52px)}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 10px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--up)}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(43,211,141,0)}100%{box-shadow:0 0 0 0 rgba(43,211,141,0)}}
+.hero h1{font-size:clamp(40px,4.6vw,66px);line-height:1.04;margin:22px 0 20px;font-weight:500}
+.hero h1 span{color:var(--dim)}
+.hero .sub{color:var(--mute);font-size:17px;max-width:440px}
+.ctas{display:flex;gap:8px;margin-top:28px;flex-wrap:wrap}
+.ctas .btn{padding:13px 20px}
+.kpis{display:flex;gap:36px;margin-top:40px;padding-top:22px;border-top:1px solid var(--line)}
+.kpis b{display:block;font-family:var(--m);font-weight:500;font-size:24px;letter-spacing:-.02em}
+.kpis span{font-size:12.5px;color:var(--mute)}
+/* terminal */
+.term{border:1px solid var(--line);border-radius:12px;background:#0C1016;overflow:hidden}
+.tbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.pairs{display:flex;gap:4px}
+.pairs button{font:500 12.5px var(--b);color:var(--mute);background:none;border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
+.pairs button[aria-pressed=true]{background:rgba(255,255,255,.07);color:var(--fg)}
+.tf{display:flex;gap:2px;font-family:var(--m);font-size:12px}
+.tf button{font:inherit;color:var(--dim);background:none;border:0;padding:5px 8px;border-radius:6px;cursor:pointer}
+.tf button[aria-pressed=true]{color:var(--fg);background:rgba(255,255,255,.06)}
+.quote{display:flex;align-items:baseline;gap:14px;padding:14px 16px 0}
+.quote .px{font-family:var(--m);font-size:clamp(26px,2.6vw,36px);font-weight:500;letter-spacing:-.03em;transition:color .3s}
+.quote .ch{font-family:var(--m);font-size:13.5px}
+.quote .meta{margin-left:auto;display:flex;gap:18px;font-size:12px;color:var(--mute)}
+.quote .meta b{display:block;font-family:var(--m);font-weight:500;color:var(--fg);font-size:12.5px}
+#chart{display:block;width:100%;height:clamp(240px,34vh,340px);cursor:crosshair}
+.lower{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.lower>div{padding:10px 14px 12px}
+.lower>div+div{border-left:1px solid var(--line)}
+.lower h4{margin:0 0 6px;font-size:11.5px;font-weight:500;color:var(--mute);display:flex;justify-content:space-between}
+.book,.trades{font-family:var(--m);font-size:12px;display:grid;gap:1px}
+.row{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;padding:2px 0}
+.row span:nth-child(2),.row span:nth-child(3){text-align:right}
+.row .bar{position:absolute;right:0;top:1px;bottom:1px;opacity:.14;z-index:-1;transition:width .4s}
+.row.a .bar{background:var(--dn)}.row.b .bar{background:var(--up)}
+.spread{font-family:var(--m);font-size:11.5px;color:var(--mute);padding:4px 0;text-align:center;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:3px 0}
+.trades .row{grid-template-columns:1fr 1fr 1fr;animation:fl .7s ease-out}
+@keyframes fl{from{background:rgba(255,255,255,.07)}to{background:transparent}}
+/* tape */
+.tape{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:rgba(12,16,22,.6)}
+.tape .tr{display:flex;width:max-content;animation:mq 55s linear infinite}
+.tape .it{display:flex;gap:10px;align-items:baseline;padding:15px 28px;border-right:1px solid var(--line);white-space:nowrap;font-size:13.5px}
+.tape .it b{font-weight:500}.tape .it .num{transition:color .4s}
+@keyframes mq{to{transform:translateX(-50%)}}
+.flash-up{color:var(--up)!important}.flash-dn{color:var(--dn)!important}
+/* sections */
+section.s{padding-top:clamp(88px,12vh,140px);padding-bottom:clamp(20px,4vh,40px)}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:2rem;flex-wrap:wrap;margin-bottom:36px}
+.sh h2{font-size:clamp(30px,3.2vw,46px);line-height:1.05;max-width:16ch;font-weight:500}
+.sh h2 span{color:var(--dim)}
+.sh p{color:var(--mute);max-width:380px}
+.mk{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:18px 18px 12px;position:relative;overflow:hidden;transition:border-color .25s,transform .4s var(--e)}
+.card:hover{border-color:rgba(232,236,241,.2);transform:translateY(-3px)}
+.card .top{display:flex;justify-content:space-between;align-items:baseline}
+.card .nm{font-weight:500}.card .tk{font-size:12px;color:var(--mute);margin-left:8px}
+.card .pc{font-family:var(--m);font-size:13px}
+.card .px{font-family:var(--m);font-size:26px;font-weight:500;letter-spacing:-.03em;margin-top:10px}
+.card canvas{display:block;width:100%;height:70px;margin-top:8px}
+.feat{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.box{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:26px;overflow:hidden;position:relative}
+.box h3{font-size:24px;letter-spacing:-.025em;margin-bottom:8px}
+.box p{color:var(--mute);max-width:380px}
+.b1{grid-column:span 7}.b2{grid-column:span 5}.b3{grid-column:span 5}.b4{grid-column:span 7}
+.lat{font-family:var(--m);font-size:clamp(52px,6vw,88px);font-weight:500;letter-spacing:-.05em;line-height:1;margin:22px 0 4px}
+.lat small{font-size:.32em;color:var(--mute);letter-spacing:0;margin-left:6px}
+.heat{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:22px}
+.heat div{border-radius:4px;padding:10px 8px;font-size:11.5px;min-height:56px;display:flex;flex-direction:column;justify-content:space-between;transition:background .8s}
+.heat b{font-weight:500}.heat span{font-family:var(--m)}
+.ticket{margin-top:22px;border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px;max-width:380px;background:rgba(255,255,255,.02)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.04);border-radius:10px;padding:3px}
+.seg button{font:500 13px var(--b);border:0;border-radius:8px;padding:9px;background:none;color:var(--mute);cursor:pointer}
+.seg button.on.buy{background:var(--up);color:#fff}.seg button.on.sell{background:var(--dn);color:#1A0306}
+.fld{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mute)}
+.fld b{font-family:var(--m);font-weight:500;color:var(--fg)}
+.place{font:600 14px var(--b);border:0;border-radius:10px;padding:12px;cursor:pointer;background:var(--up);color:#fff}
+.place.sell{background:var(--dn);color:#1A0306}
+#tmsg{font-size:12px;color:var(--mute);min-height:1.2em}
+.risk{margin-top:22px;height:10px;border-radius:999px;background:linear-gradient(90deg,var(--up),#E6C84F,var(--dn));position:relative;max-width:420px}
+.risk i{position:absolute;top:-5px;width:4px;height:20px;border-radius:2px;background:var(--fg);transition:left 1.2s var(--e)}
+.rl{display:flex;justify-content:space-between;max-width:420px;font-size:12px;color:var(--mute);margin-top:10px}
+.fees{width:100%;border-collapse:collapse;font-size:14.5px}
+.fees th,.fees td{text-align:left;padding:16px 0;border-top:1px solid var(--line)}
+.fees th{font-weight:500;color:var(--mute);font-size:12.5px}
+.fees td:not(:first-child),.fees th:not(:first-child){text-align:right;font-family:var(--m)}
+.cta{text-align:center;padding-top:clamp(100px,14vh,160px);padding-bottom:clamp(80px,12vh,120px)}
+.cta h2{font-size:clamp(34px,4vw,56px);line-height:1.05;letter-spacing:-.035em;font-weight:500}
+.cta p{color:var(--mute);margin:18px auto 28px;max-width:420px}
+.cta form{display:flex;gap:8px;max-width:440px;margin:0 auto}
+.cta input{flex:1;min-width:0;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;color:var(--fg);font:400 14.5px var(--b);padding:12px 14px}
+.cta input:focus{outline:none;border-color:rgba(43,211,141,.6)}
+#msg{font-size:13px;color:var(--mute);margin-top:12px;min-height:1.3em}
+footer{border-top:1px solid var(--line);padding:24px 0 30px}
+footer .wrap{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+footer p{max-width:720px}
+@media(max-width:980px){nav.main{display:none}.hero{grid-template-columns:1fr;min-height:0}.mk{grid-template-columns:1fr 1fr}.feat>*{grid-column:1/-1!important}.quote .meta{display:none}}
+@media(max-width:620px){.mk{grid-template-columns:1fr}.lower{grid-template-columns:1fr}.lower>div+div{border-left:0;border-top:1px solid var(--line)}.kpis{gap:22px}.heat{grid-template-columns:repeat(3,1fr)}.hbtns .btn:not(.go){display:none}}
+@media(prefers-reduced-motion:reduce){.tape .tr{animation:none}.live i{animation:none}.trades .row{animation:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#top"><svg viewBox="0 0 24 24" fill="none"><path d="M3 18 9 9l4 5 8-11" stroke="#2BD38D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Vektor</a>
+  <nav class="main" aria-label="Main"><a href="#markets">Markets</a><a href="#platform">Platform</a><a href="#fees">Fees</a><a href="#open">Learn</a></nav>
+  <div class="hbtns"><a class="btn" href="#open">Log in</a><a class="btn go" href="#open">Open account</a></div>
+</div></header>
+
+<main id="top">
+<div class="hero wrap">
+  <div>
+    <span class="live"><i></i>Markets open. Prices below are simulated.</span>
+    <h1>Stocks, crypto and forex on one fast screen.</h1>
+    <p class="sub">Real-time charts, one-tap orders and the risk of every trade shown before you place it. 2,400 markets, from €0 commission.</p>
+    <div class="ctas"><a class="btn go" href="#open">Open an account</a><a class="btn" href="#platform">Try the demo</a></div>
+    <div class="kpis"><div><b class="num" id="k1">4.2 ms</b><span>median execution</span></div><div><b class="num">0.0</b><span>pip spreads from</span></div><div><b class="num">2,400+</b><span>markets</span></div></div>
+  </div>
+  <div class="term" aria-label="Live trading terminal, simulated">
+    <div class="tbar">
+      <div class="pairs" role="group" aria-label="Market"><button aria-pressed="true" data-p="0">BTC/USD</button><button aria-pressed="false" data-p="1">ETH/USD</button><button aria-pressed="false" data-p="2">EUR/USD</button><button aria-pressed="false" data-p="3">Gold</button></div>
+      <div class="tf" role="group" aria-label="Timeframe"><button aria-pressed="false">1m</button><button aria-pressed="true">5m</button><button aria-pressed="false">15m</button><button aria-pressed="false">1h</button></div>
+    </div>
+    <div class="quote"><span class="px" id="px">—</span><span class="ch" id="ch">—</span><div class="meta"><div>24h high<b id="hi">—</b></div><div>24h low<b id="lo">—</b></div><div>Volume<b id="vol">—</b></div></div></div>
+    <canvas id="chart"></canvas>
+    <div class="lower">
+      <div><h4><span>Order book</span><span>Size</span></h4><div class="book" id="book"></div></div>
+      <div><h4><span>Recent trades</span><span>Time</span></h4><div class="trades" id="trades"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tape" aria-label="Simulated price ticker"><div class="tr" id="tape"></div></div>
+
+<section class="s wrap" id="markets">
+  <div class="sh"><h2>Every market, updated as it ticks.</h2><p>Follow what matters to you. Each card updates as the price ticks, with the day's change at a glance.</p></div>
+  <div class="mk" id="mk"></div>
+</section>
+
+<section class="s wrap" id="platform">
+  <div class="sh"><h2>Built for speed, readable at a glance.</h2><p>Fast enough for scalpers, clear enough for your first trade.</p></div>
+  <div class="feat">
+    <div class="box b1"><h3>Orders filled before you blink</h3><p>Our matching engine sits next to the exchanges. This is the latency right now:</p><div class="lat num" id="lat">4.2<small>ms</small></div></div>
+    <div class="box b2"><h3>One-tap tickets</h3><p>Size, stop and target on one card. Swipe to switch sides.</p>
+      <div class="ticket"><div class="seg" role="group" aria-label="Side"><button class="buy on" id="sb">Buy</button><button class="sell" id="ss">Sell</button></div><div class="fld">Amount<b>0.25 BTC</b></div><div class="fld">Stop loss<b id="sl">—</b></div><button class="place" id="place">Buy 0.25 BTC</button><div id="tmsg" role="status"></div></div></div>
+    <div class="box b3"><h3>Risk you can see</h3><p>Every ticket shows how much you could lose before you place it.</p><div class="risk"><i id="ri" style="left:30%"></i></div><div class="rl"><span>Low</span><span>Medium</span><span>High</span></div></div>
+    <div class="box b4"><h3>The whole market in one look</h3><p>Sectors heat up and cool down in real time.</p><div class="heat" id="heat"></div></div>
+  </div>
+</section>
+
+<section class="s wrap" id="fees">
+  <div class="sh"><h2>Fees on one line per market.</h2><p>No inactivity fees, no deposit fees, no surprises at the end of the month.</p></div>
+  <table class="fees"><thead><tr><th>Market</th><th>Commission</th><th>Spread from</th><th>Overnight</th></tr></thead><tbody>
+  <tr><td>Stocks and ETFs</td><td>€0</td><td>0.05%</td><td>None</td></tr>
+  <tr><td>Crypto</td><td>0.10%</td><td>0.15%</td><td>None</td></tr>
+  <tr><td>Forex</td><td>€0</td><td>0.0 pips</td><td>From 0.01%</td></tr>
+  <tr><td>Commodities</td><td>€0</td><td>0.3 pips</td><td>From 0.01%</td></tr>
+  </tbody></table>
+</section>
+
+<section class="cta wrap" id="open">
+  <h2>Open an account<br>in four minutes.</h2>
+  <p>Start with a free demo balance. Move to real money when you're ready.</p>
+  <form id="f"><input type="email" required placeholder="Email address" aria-label="Email address" autocomplete="email"><button class="btn go" type="submit">Get started</button></form>
+  <p id="msg" role="status"></p>
+</section>
+</main>
+<footer><div class="wrap"><span>© 2026 Vektor</span><p>Concept website. Vektor is a fictional company and every price, chart and figure on this page is simulated. Trading involves a risk of losing money.</p></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var UP='#1FB37A',DN='#E5484D';
+function rnd(a,b){return a+Math.random()*(b-a);}
+function gauss(){return (Math.random()+Math.random()+Math.random()-1.5)/1.5;}
+function fmt(v,d){return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+/* assets for tape and cards */
+var A=[['Bitcoin','BTC',68420,2,.0016],['Ethereum','ETH',3512,2,.002],['Solana','SOL',172.4,2,.003],['Apple','AAPL',229.8,2,.0009],['Nvidia','NVDA',141.2,2,.0016],['Tesla','TSLA',248.5,2,.002],['EUR/USD','EURUSD',1.0842,4,.0003],['Gold','XAU',2648,1,.0007],['Oil','WTI',71.3,2,.0012],['S&P 500','SPX',5872,1,.0005],['Nasdaq 100','NDX',20640,1,.0007],['Amazon','AMZN',201.6,2,.0011]];
+A.forEach(function(a){a.open=a[2]*(1-rnd(-.02,.02));a.px=a[2];a.hist=[];for(var i=0;i<60;i++){a.px*=1+gauss()*a[4];a.hist.push(a.px);}});
+function step(a){a.px*=1+gauss()*a[4]+.00004;a.hist.push(a.px);if(a.hist.length>60)a.hist.shift();}
+function ch(a){return (a.px/a.open-1)*100;}
+/* tape */
+var tape=document.getElementById('tape');
+function tapeHTML(){return A.map(function(a,i){return '<div class="it"><b>'+a[1]+'</b><span class="num" data-t="'+i+'">'+fmt(a.px,a[3])+'</span><span class="num tc" data-c="'+i+'"></span></div>';}).join('');}
+tape.innerHTML=tapeHTML()+tapeHTML();
+/* cards */
+var mkIdx=[0,1,3,4,6,7],mk=document.getElementById('mk');
+mk.innerHTML=mkIdx.map(function(i){var a=A[i];return '<div class="card"><div class="top"><div><span class="nm">'+a[0]+'</span><span class="tk">'+a[1]+'</span></div><span class="pc" data-mc="'+i+'"></span></div><div class="px" data-mp="'+i+'"></div><canvas data-sp="'+i+'"></canvas></div>';}).join('');
+var spark=[].slice.call(mk.querySelectorAll('canvas'));
+function drawSpark(cv){var i=+cv.dataset.sp,a=A[i],w=cv.clientWidth,h=cv.clientHeight,d=Math.min(devicePixelRatio||1,2);if(cv.width!==w*d){cv.width=w*d;cv.height=h*d;}
+ var g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);var hs=a.hist,mn=Math.min.apply(0,hs),mx=Math.max.apply(0,hs),r=mx-mn||1,c=ch(a)>=0?UP:DN;
+ g.beginPath();hs.forEach(function(v,k){var x=k/(hs.length-1)*w,y=h-4-(v-mn)/r*(h-8);k?g.lineTo(x,y):g.moveTo(x,y);});
+ g.strokeStyle=c;g.lineWidth=1.6;g.stroke();g.lineTo(w,h);g.lineTo(0,h);g.closePath();var gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,c+'33');gr.addColorStop(1,c+'00');g.fillStyle=gr;g.fill();}
+function updAssets(){A.forEach(function(a,i){var old=a.px;step(a);var c=ch(a),dir=a.px>=old?'flash-up':'flash-dn';
+ document.querySelectorAll('[data-t="'+i+'"]').forEach(function(el){el.textContent=fmt(a.px,a[3]);if(!reduce){el.classList.remove('flash-up','flash-dn');void el.offsetWidth;el.classList.add(dir);setTimeout(function(){el.classList.remove(dir);},500);}});
+ document.querySelectorAll('[data-c="'+i+'"]').forEach(function(el){el.textContent=(c>=0?'+':'')+c.toFixed(2)+'%';el.className='num tc '+(c>=0?'up':'dn');});
+ var mp=document.querySelector('[data-mp="'+i+'"]');if(mp){mp.textContent=fmt(a.px,a[3]);var mc=document.querySelector('[data-mc="'+i+'"]');mc.textContent=(c>=0?'+':'')+c.toFixed(2)+'%';mc.className='pc '+(c>=0?'up':'dn');}
+ });spark.forEach(drawSpark);}
+updAssets();setInterval(updAssets,1200);
+/* main chart */
+var P=[{n:'BTC/USD',p:68420,d:2,v:.0011},{n:'ETH/USD',p:3512,d:2,v:.0014},{n:'EUR/USD',p:1.0842,d:5,v:.00025},{n:'Gold',p:2648,d:2,v:.0006}];
+var cur=0,C=[],N=72,price,tickN=0,TICKS=16,hi,lo,vol;
+function seed(){var p=P[cur].p,v=P[cur].v;C=[];for(var i=0;i<N;i++){var o=p,h=o,l=o,c=o;for(var k=0;k<TICKS;k++){c*=1+gauss()*v;h=Math.max(h,c);l=Math.min(l,c);}C.push({o:o,h:h,l:l,c:c,v:rnd(.3,1)});p=c;}price=p;tickN=0;
+ hi=Math.max.apply(0,C.map(function(x){return x.h;}))*1.004;lo=Math.min.apply(0,C.map(function(x){return x.l;}))*.996;vol=rnd(1.2,3.8);}
+seed();
+var cv=document.getElementById('chart'),g=cv.getContext('2d'),hover=null,prevPx=price;
+cv.addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();hover={x:e.clientX-r.left,y:e.clientY-r.top};});
+cv.addEventListener('pointerleave',function(){hover=null;});
+function ema(n){var k=2/(n+1),e=C[0].c,out=[];C.forEach(function(x){e=x.c*k+e*(1-k);out.push(e);});return out;}
+function draw(){var w=cv.clientWidth,h=cv.clientHeight,d=Math.min(devicePixelRatio||1,2);if(cv.width!==Math.round(w*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d);}
+ g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);
+ var padR=74,padB=40,cw=(w-padR)/N,mn=Infinity,mx=-Infinity;C.forEach(function(x){mn=Math.min(mn,x.l);mx=Math.max(mx,x.h);});var r=(mx-mn)||1;mn-=r*.08;mx+=r*.08;r=mx-mn;
+ var Y=function(v){return 12+(1-(v-mn)/r)*(h-padB-18);};
+ g.strokeStyle='rgba(232,236,241,.06)';g.lineWidth=1;g.font='11px "Geist Mono",monospace';g.fillStyle='#5A6475';g.textAlign='left';
+ for(var i=0;i<5;i++){var yy=12+i*(h-padB-18)/4;g.beginPath();g.moveTo(0,yy);g.lineTo(w-padR,yy);g.stroke();var val=mx-i*r/4;g.fillText(fmt(val,P[cur].d),w-padR+8,yy+4);}
+ var vmax=Math.max.apply(0,C.map(function(x){return x.v;}));
+ C.forEach(function(x,k){var X=k*cw+cw/2,up=x.c>=x.o,col=up?UP:DN;
+  g.fillStyle=col+'2a';var vh=(x.v/vmax)*(padB-10);g.fillRect(X-cw*.35,h-vh-2,cw*.7,vh);
+  g.strokeStyle=col;g.beginPath();g.moveTo(X,Y(x.h));g.lineTo(X,Y(x.l));g.stroke();
+  var y1=Y(Math.max(x.o,x.c)),y2=Y(Math.min(x.o,x.c));g.fillStyle=col;g.fillRect(X-cw*.32,y1,cw*.64,Math.max(1,y2-y1));});
+ var e1=ema(9),e2=ema(26);[[e1,'rgba(232,236,241,.55)'],[e2,'rgba(110,139,255,.7)']].forEach(function(s){g.beginPath();s[0].forEach(function(v,k){var X=k*cw+cw/2;k?g.lineTo(X,Y(v)):g.moveTo(X,Y(v));});g.strokeStyle=s[1];g.lineWidth=1.3;g.stroke();});
+ var last=C[C.length-1],ly=Y(last.c),lc=last.c>=last.o?UP:DN;
+ g.setLineDash([3,4]);g.strokeStyle=lc;g.beginPath();g.moveTo(0,ly);g.lineTo(w-padR,ly);g.stroke();g.setLineDash([]);
+ g.fillStyle=lc;g.fillRect(w-padR+2,ly-10,padR-4,20);g.fillStyle='#04120B';g.font='500 11px "Geist Mono",monospace';g.fillText(fmt(last.c,P[cur].d),w-padR+7,ly+4);
+ var px2=(N-1)*cw+cw/2;g.beginPath();g.arc(px2,ly,3+Math.sin(performance.now()/200)*1.2,0,6.283);g.fillStyle=lc;g.fill();
+ if(hover&&hover.x<w-padR&&hover.y<h){var k=Math.max(0,Math.min(N-1,Math.floor(hover.x/cw))),x=C[k];
+  g.strokeStyle='rgba(232,236,241,.25)';g.setLineDash([2,3]);g.beginPath();g.moveTo(k*cw+cw/2,0);g.lineTo(k*cw+cw/2,h);g.moveTo(0,hover.y);g.lineTo(w-padR,hover.y);g.stroke();g.setLineDash([]);
+  var t='O '+fmt(x.o,P[cur].d)+'  H '+fmt(x.h,P[cur].d)+'  L '+fmt(x.l,P[cur].d)+'  C '+fmt(x.c,P[cur].d);g.font='11px "Geist Mono",monospace';var tw=g.measureText(t).width;g.fillStyle='rgba(12,16,22,.92)';g.fillRect(8,8,tw+16,22);g.fillStyle='#E8ECF1';g.fillText(t,16,23);}
+}
+var pxEl=document.getElementById('px'),chEl=document.getElementById('ch');
+function quote(){var c=C[C.length-1].c,o=C[0].o,pc=(c/o-1)*100;pxEl.textContent=fmt(c,P[cur].d);pxEl.style.color=c>=prevPx?UP:DN;prevPx=c;chEl.textContent=(pc>=0?'+':'')+pc.toFixed(2)+'%';chEl.className='ch '+(pc>=0?'up':'dn');
+ document.getElementById('hi').textContent=fmt(Math.max(hi,C.reduce(function(m,x){return Math.max(m,x.h);},0)),P[cur].d);document.getElementById('lo').textContent=fmt(Math.min(lo,C.reduce(function(m,x){return Math.min(m,x.l);},1e9)),P[cur].d);document.getElementById('vol').textContent='$'+vol.toFixed(2)+'B';}
+/* book + trades */
+var bookEl=document.getElementById('book'),trEl=document.getElementById('trades');
+function book(){var c=C[C.length-1].c,st=c*.00012,h='',dd=P[cur].d;var asks=[],bids=[];for(var i=6;i>=1;i--)asks.push([c+st*i,rnd(.05,2.4)]);for(var j=1;j<=6;j++)bids.push([c-st*j,rnd(.05,2.4)]);
+ var mxs=2.4;asks.forEach(function(r){h+='<div class="row a"><span class="dn">'+fmt(r[0],dd)+'</span><span>'+r[1].toFixed(3)+'</span><span>'+fmt(r[0]*r[1]/1000,1)+'k</span><i class="bar" style="width:'+(r[1]/mxs*100)+'%"></i></div>';});
+ h+='<div class="spread">Spread '+fmt(st*2,dd)+'</div>';
+ bids.forEach(function(r){h+='<div class="row b"><span class="up">'+fmt(r[0],dd)+'</span><span>'+r[1].toFixed(3)+'</span><span>'+fmt(r[0]*r[1]/1000,1)+'k</span><i class="bar" style="width:'+(r[1]/mxs*100)+'%"></i></div>';});
+ bookEl.innerHTML=h;}
+var trades=[];
+function trade(){var c=C[C.length-1].c,up=Math.random()>.47,t=new Date();trades.unshift([c*(1+(up?1:-1)*rnd(0,.00008)),rnd(.001,1.8),up,t.toTimeString().slice(0,8)]);trades=trades.slice(0,13);
+ trEl.innerHTML=trades.map(function(r,k){return '<div class="row"'+(k?' style="animation:none"':'')+'><span class="'+(r[2]?'up':'dn')+'">'+fmt(r[0],P[cur].d)+'</span><span>'+r[1].toFixed(3)+'</span><span style="color:#8A94A6">'+r[3]+'</span></div>';}).join('');}
+for(var q=0;q<13;q++)trade();
+function tick(){var last=C[C.length-1],v=P[cur].v;last.c*=1+gauss()*v*.9+v*.03;last.h=Math.max(last.h,last.c);last.l=Math.min(last.l,last.c);last.v+=rnd(0,.06);tickN++;
+ if(tickN>=TICKS){C.shift();C.push({o:last.c,h:last.c,l:last.c,c:last.c,v:rnd(.2,.5)});tickN=0;}
+ quote();if(Math.random()<.55)trade();if(tickN%3===0)book();}
+quote();book();
+setInterval(tick,reduce?900:160);
+(function loop(){draw();requestAnimationFrame(loop);})();
+[].forEach.call(document.querySelectorAll('.pairs button'),function(b){b.addEventListener('click',function(){[].forEach.call(document.querySelectorAll('.pairs button'),function(x){x.setAttribute('aria-pressed',x===b);});cur=+b.dataset.p;seed();prevPx=C[C.length-1].c;trades=[];for(var q=0;q<13;q++)trade();quote();book();upTicket();});});
+[].forEach.call(document.querySelectorAll('.tf button'),function(b){b.addEventListener('click',function(){[].forEach.call(document.querySelectorAll('.tf button'),function(x){x.setAttribute('aria-pressed',x===b);});seed();quote();});});
+/* latency */
+var lat=document.getElementById('lat'),k1=document.getElementById('k1');
+setInterval(function(){var v=(3.6+Math.random()*1.4).toFixed(1);lat.innerHTML=v+'<small>ms</small>';k1.textContent=v+' ms';},700);
+/* heatmap */
+var S=['Tech','Banks','Energy','Health','Retail','Crypto','Autos','Telecom','Gold','Media','Travel','Utilities'],heat=document.getElementById('heat'),hv=S.map(function(){return rnd(-3,3);});
+function paint(){heat.innerHTML=S.map(function(s,i){hv[i]=Math.max(-4,Math.min(4,hv[i]+gauss()*.6));var v=hv[i],a=Math.min(.85,.18+Math.abs(v)/4*.6),c=v>=0?'43,211,141':'255,90,106';return '<div style="background:rgba('+c+','+a+')"><b>'+s+'</b><span>'+(v>=0?'+':'')+v.toFixed(2)+'%</span></div>';}).join('');}
+paint();setInterval(paint,1500);
+/* ticket */
+var side='buy',sb=document.getElementById('sb'),ss=document.getElementById('ss'),place=document.getElementById('place');
+function upTicket(){var c=C[C.length-1].c;document.getElementById('sl').textContent=fmt(c*(side==='buy'?.985:1.015),P[cur].d);place.textContent=(side==='buy'?'Buy':'Sell')+' 0.25 BTC';place.className='place'+(side==='sell'?' sell':'');sb.classList.toggle('on',side==='buy');ss.classList.toggle('on',side==='sell');}
+sb.onclick=function(){side='buy';upTicket();};ss.onclick=function(){side='sell';upTicket();};
+place.onclick=function(){document.getElementById('tmsg').textContent='Demo only. No order was placed.';};
+upTicket();setInterval(upTicket,1600);
+var ri=document.getElementById('ri');setInterval(function(){ri.style.left=rnd(14,72)+'%';},2600);
+document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();document.getElementById('msg').textContent='Preview only. Nothing was sent.';});
+if(window.Lenis&&!reduce){var l=new Lenis({lerp:.09,anchors:true});(function raf(t){l.raf(t);requestAnimationFrame(raf);})(performance.now());}
+})();
+</script>
+<a href="../../index.html#work" style="position:fixed;left:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#141414;color:#fff;font:500 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.2)">&larr; All work</a>
+</body>
+</html>
