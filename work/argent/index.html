@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Argent — language models for teams who ship</title>
+<meta name="description" content="Three language models behind one API, with citations, calibrated refusals and deployment in your own cloud.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAFAF9;--surface:#F1F1EE;--card:#FFFFFF;--ink:#111110;--mute:#6B6B66;--line:rgba(17,17,16,.1);--line2:rgba(17,17,16,.28);--accent:#2B54E8;--b:"Geist",system-ui,sans-serif;--m:"Geist Mono",ui-monospace,monospace}
+*{box-sizing:border-box}html{background:var(--bg)}html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--b);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}p{margin:0}
+h1,h2,h3{font-weight:500;margin:0;letter-spacing:-.035em;line-height:1.05}
+h1{font-size:clamp(40px,4.8vw,68px)}h2{font-size:clamp(30px,3.2vw,46px)}h3{font-size:19px;letter-spacing:-.015em;line-height:1.3}
+.wrap{max-width:1280px;margin:0 auto;padding-left:clamp(20px,4vw,56px);padding-right:clamp(20px,4vw,56px)}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;z-index:100}.skip:focus{top:12px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+header{position:sticky;top:0;z-index:40;background:rgba(250,250,249,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:24px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:17px;letter-spacing:-.02em}
+.logo i{width:18px;height:18px;border-radius:50%;background:conic-gradient(from 200deg,#D9DCE3,#8E949F,#F3F4F6,#7C828C,#D9DCE3)}
+header nav{display:flex;gap:28px;font-size:14.5px;color:var(--mute)}header nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;font:500 14.5px var(--b);border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
+.btn:hover{background:var(--accent);border-color:var(--accent)}.btn:active{transform:translateY(1px)}
+.btn.line{background:transparent;color:var(--ink);border-color:var(--line2)}.btn.line:hover{border-color:var(--ink);background:transparent}
+.btn.sm{min-height:38px;padding:0 14px;font-size:14px}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,4vw,64px);align-items:center;min-height:calc(100svh - 64px);padding-top:36px;padding-bottom:48px}
+.eyebrow{font-size:14px;color:var(--mute);margin-bottom:18px}
+.lead{font-size:18px;color:var(--mute);max-width:470px;margin-top:20px}
+.ctas{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+.facts{display:flex;gap:36px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.facts b{display:block;font-weight:500;font-size:24px;letter-spacing:-.03em}.facts span{font-size:13.5px;color:var(--mute)}
+[data-enter]>*{animation:enter .9s cubic-bezier(.2,.7,.2,1) both}[data-enter]>*:nth-child(2){animation-delay:.08s}[data-enter]>*:nth-child(3){animation-delay:.16s}[data-enter]>*:nth-child(4){animation-delay:.24s}
+@keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* app frame */
+.app{border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.04),0 24px 60px -28px rgba(17,17,16,.25);overflow:hidden;font-size:14px}
+.app .bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:#FCFCFB}
+.app .bar .dots{display:flex;gap:6px}.app .bar .dots i{width:10px;height:10px;border-radius:50%;background:#E3E3DF}
+.app .bar .t{font-size:13px;color:var(--mute)}
+.app .body{display:grid;grid-template-columns:200px 1fr;min-height:430px}
+.app aside{border-right:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:14px;background:#FCFCFB}
+.app aside label{font-size:12px;color:var(--mute);display:block;margin-bottom:6px}
+.seg{display:grid;gap:4px}.seg button{text-align:left;border:1px solid transparent;background:none;border-radius:6px;padding:7px 9px;font:500 13.5px var(--b);color:var(--mute);cursor:pointer;display:flex;justify-content:space-between}
+.seg button span{font:400 12px var(--m)}
+.seg button[aria-pressed=true]{background:var(--card);border-color:var(--line);color:var(--ink)}
+.kv{font:400 12.5px var(--m);color:var(--mute);display:grid;gap:4px}.kv b{color:var(--ink);font-weight:500}
+.app main{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.msg{border-radius:10px;padding:12px 14px;line-height:1.55}
+.msg.u{background:var(--surface);align-self:flex-end;max-width:85%}
+.msg.a{border:1px solid var(--line);min-height:180px}
+.msg.a .who{font-size:12px;color:var(--mute);margin-bottom:6px;display:flex;justify-content:space-between}
+.cite{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:4px;background:#E8EDFD;color:var(--accent);font:500 11px var(--m);vertical-align:1px;margin-left:2px}
+.src{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.src span{font:400 12px var(--m);border:1px solid var(--line);border-radius:6px;padding:4px 8px;color:var(--mute)}
+.caret{display:inline-block;width:7px;height:15px;background:var(--ink);vertical-align:-2px;margin-left:1px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.foot{display:flex;justify-content:space-between;font:400 12px var(--m);color:var(--mute);border-top:1px solid var(--line);padding:10px 18px}
+section{padding-top:clamp(84px,11vh,124px);padding-bottom:clamp(84px,11vh,124px);border-top:1px solid var(--line)}
+section.alt{background:var(--surface)}
+.sh{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:24px 48px;align-items:end;margin-bottom:44px}.sh p{color:var(--mute);max-width:430px}
+.models{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:24px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-2px);border-color:var(--line2)}
+.card .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.card .tag{font:400 12px var(--m);color:var(--mute)}
+.card p{color:var(--mute);font-size:15px}
+.card dl{margin:22px 0 0}.card dl div{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.card dt{color:var(--mute)}.card dd{margin:0;font-family:var(--m);font-size:13.5px}
+.code{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,72px);align-items:center}
+pre{margin:0;background:#141413;color:#E8E8E3;border-radius:12px;padding:22px 24px;font:400 13.5px/1.75 var(--m);overflow:auto}
+pre .k{color:#9DB5FF}pre .s{color:#B9E3A8}pre .c{color:#7C7C76}
+.list{list-style:none;margin:26px 0 0;padding:0}.list li{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.list li:last-child{border-bottom:1px solid var(--line)}.list span{color:var(--mute)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat .card h3{margin:14px 0 6px}
+.ico{width:36px;height:36px;border-radius:9px;background:var(--surface);display:grid;place-items:center}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{text-align:left;padding:15px 0;border-top:1px solid var(--line)}th{font-weight:500;color:var(--mute);font-size:13.5px}td:not(:first-child),th:not(:first-child){text-align:right;font-family:var(--m);font-size:14px}tr:last-child td{border-bottom:1px solid var(--line)}
+.cta{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:32px 64px;align-items:end}
+.cta form{display:flex;gap:10px;flex-wrap:wrap}.cta input{flex:1;min-width:220px;font:400 16px var(--b);border:1px solid var(--line2);border-radius:8px;padding:0 14px;min-height:46px;background:var(--card)}.cta input:focus{outline:none;border-color:var(--ink)}
+.fmsg{font-size:14px;color:var(--mute);min-height:1.4em;margin-top:10px}
+footer{border-top:1px solid var(--line);padding:30px 0 36px;font-size:13.5px;color:var(--mute)}footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}footer p{max-width:620px}
+@media(max-width:960px){header nav{display:none}.hero,.sh,.code,.cta{grid-template-columns:1fr}.hero{min-height:0}.models,.feat{grid-template-columns:1fr}.app .body{grid-template-columns:1fr}.app aside{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap}.app aside>div{flex:1;min-width:160px}}
+@media(prefers-reduced-motion:reduce){[data-enter]>*{animation:none}.caret{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="wrap"><a class="logo" href="#top"><i aria-hidden="true"></i>Argent</a><nav aria-label="Main"><a href="#models">Models</a><a href="#api">API</a><a href="#trust">Security</a><a href="#pricing">Pricing</a></nav><a class="btn sm" href="#start">Get an API key</a></div></header>
+<main id="main">
+<div class="wrap hero" id="top">
+  <div data-enter>
+    <p class="eyebrow">Argent 2 is available in the API</p>
+    <h1>Language models for teams that ship to production.</h1>
+    <p class="lead">Three model sizes behind one API. Answers cite the documents they came from, and the model says when it doesn't know.</p>
+    <div class="ctas"><a class="btn" href="#start">Get an API key</a><a class="btn line" href="#api">Read the docs</a></div>
+    <div class="facts"><div><b>38 ms</b><span>first token on Lite</span></div><div><b>1M</b><span>tokens of context on Max</span></div><div><b>0 days</b><span>prompt retention</span></div></div>
+  </div>
+  <div class="app" data-enter aria-label="Argent console example">
+    <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="t">console.argent.example / playground</span><span class="t">Workspace: Legal</span></div>
+    <div class="body">
+      <aside>
+        <div><label>Model</label><div class="seg" role="group" aria-label="Model"><button aria-pressed="false" data-m="0">Lite <span>38 ms</span></button><button aria-pressed="true" data-m="1">Argent <span>120 ms</span></button><button aria-pressed="false" data-m="2">Max <span>420 ms</span></button></div></div>
+        <div><label>Sources</label><div class="kv"><span>supplier-agreement.pdf</span><span>amendment-03.pdf</span><span>email-thread.eml</span></div></div>
+        <div><label>Run</label><div class="kv"><span>Latency <b id="lat">0.12 s</b></span><span>Tokens <b id="tok">0</b></span></div></div>
+      </aside>
+      <main>
+        <div class="msg u">When can we end the supplier agreement without paying a penalty?</div>
+        <div class="msg a"><div class="who"><span>Argent</span><span id="state">Answering</span></div><div id="ans"></div><div class="src" id="src" hidden><span>[1] supplier-agreement.pdf, p. 14</span><span>[2] amendment-03.pdf, p. 2</span></div></div>
+      </main>
+    </div>
+    <div class="foot"><span>Citations on</span><span>Data stays in eu-west</span></div>
+  </div>
+</div>
+
+<section id="models"><div class="wrap">
+  <div class="sh"><h2>One family, three sizes.</h2><p>Same training, same safety work and the same API. Choose by how fast you need the answer and how hard the question is.</p></div>
+  <div class="models">
+    <article class="card"><div class="top"><h3>Lite</h3><span class="tag">fastest</span></div><p>Autocomplete, routing, classification and anything on the hot path.</p><dl><div><dt>First token</dt><dd>38 ms</dd></div><div><dt>Context</dt><dd>128k</dd></div><div><dt>Input</dt><dd>$0.10 / M tokens</dd></div></dl></article>
+    <article class="card"><div class="top"><h3>Argent</h3><span class="tag">default</span></div><p>Agents, support, drafting and code review for most products.</p><dl><div><dt>First token</dt><dd>120 ms</dd></div><div><dt>Context</dt><dd>400k</dd></div><div><dt>Input</dt><dd>$1.00 / M tokens</dd></div></dl></article>
+    <article class="card"><div class="top"><h3>Max</h3><span class="tag">deepest</span></div><p>Research, long contracts and whole codebases in one request.</p><dl><div><dt>First token</dt><dd>420 ms</dd></div><div><dt>Context</dt><dd>1M</dd></div><div><dt>Input</dt><dd>$6.00 / M tokens</dd></div></dl></article>
+  </div>
+</div></section>
+
+<section id="api" class="alt"><div class="wrap code">
+  <div><h2>Ten lines to your first answer.</h2><p class="lead">Send your documents with the question and get back an answer with the page each claim came from.</p>
+    <ul class="list"><li><b>SDKs</b><span>Python, TypeScript, Go</span></li><li><b>Streaming</b><span>Server-sent events</span></li><li><b>Rate limits</b><span>Raised on request</span></li></ul></div>
+  <pre aria-label="Python example"><span class="k">from</span> argent <span class="k">import</span> Argent
+
+client = Argent()
+answer = client.answers.create(
+    model=<span class="s">"argent-2"</span>,
+    question=<span class="s">"When can we exit without a penalty?"</span>,
+    documents=[<span class="s">"supplier-agreement.pdf"</span>],
+    citations=<span class="k">True</span>,
+)
+<span class="k">print</span>(answer.text)      <span class="c"># 90 days' notice after month 24 [1]</span>
+<span class="k">print</span>(answer.sources)   <span class="c"># [page 14, page 2]</span></pre>
+</div></section>
+
+<section id="trust"><div class="wrap">
+  <div class="sh"><h2>Built to be checked.</h2><p>For teams in law, finance and healthcare who have to show where an answer came from.</p></div>
+  <div class="feat">
+    <article class="card"><div class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M4 5h11l5 5v9a1 1 0 0 1-1 1H4z"/><path d="M8 13h8M8 17h5"/></svg></div><h3>Citations on every claim</h3><p>Each sentence drawn from your files links to the page and line it came from.</p></article>
+    <article class="card"><div class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div><h3>Says when it doesn't know</h3><p>Calibrated refusals instead of confident guesses, tuned per workspace.</p></article>
+    <article class="card"><div class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Runs in your cloud</h3><p>Deploy inside your own AWS, Azure or Google Cloud account. Prompts are never kept.</p></article>
+  </div>
+</div></section>
+
+<section id="pricing" class="alt"><div class="wrap">
+  <div class="sh"><h2>Pay per token.</h2><p>No seats and no minimum. Volume discounts start at $10,000 a month.</p></div>
+  <table><thead><tr><th>Model</th><th>Input / M tokens</th><th>Output / M tokens</th><th>Context</th></tr></thead><tbody>
+  <tr><td>Lite</td><td>$0.10</td><td>$0.40</td><td>128k</td></tr><tr><td>Argent</td><td>$1.00</td><td>$4.00</td><td>400k</td></tr><tr><td>Max</td><td>$6.00</td><td>$24.00</td><td>1M</td></tr></tbody></table>
+</div></section>
+
+<section id="start"><div class="wrap cta">
+  <div><h2>Get an API key.</h2><p class="lead">$20 of free credit for every new workspace. No card until you go to production.</p></div>
+  <div><form id="f"><input type="email" required placeholder="Work email" aria-label="Work email" autocomplete="email"><button class="btn" type="submit">Create workspace</button></form><p class="fmsg" id="fmsg" role="status"></p></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>&copy; 2026 Argent</span><p>Concept website. Argent is a fictional company; models, figures and prices are illustrative.</p></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(window.Lenis&&!reduce){var l=new Lenis({lerp:.1,anchors:true});(function raf(t){l.raf(t);requestAnimationFrame(raf);})(performance.now());}
+var A='You can end it without a penalty from month 24, with 90 days’ written notice.[1] Amendment 3 removed the earlier break fee of 15% of the remaining contract value.[2] Before month 24, the break fee still applies to notices sent before 1 March 2027.[2]';
+var ans=document.getElementById('ans'),src=document.getElementById('src'),st=document.getElementById('state'),tok=document.getElementById('tok'),lat=document.getElementById('lat');
+var speeds=[6,14,26],lats=['0.04 s','0.12 s','0.42 s'],m=1,timer=null;
+function render(n){var s=A.slice(0,n).replace(/\[(\d)\]/g,'<span class="cite">$1</span>');ans.innerHTML=s+(n<A.length?'<span class="caret"></span>':'');tok.textContent=Math.round(n/4);}
+function run(){clearInterval(timer);var n=0;src.hidden=true;st.textContent='Answering';lat.textContent=lats[m];if(reduce){render(A.length);src.hidden=false;st.textContent='Done';return;}
+ timer=setInterval(function(){n=Math.min(A.length,n+speeds[m]/6+1);render(Math.floor(n));if(n>=A.length){clearInterval(timer);src.hidden=false;st.textContent='Done';setTimeout(run,3200);}},30);}
+[].forEach.call(document.querySelectorAll('.seg button'),function(b){b.addEventListener('click',function(){[].forEach.call(document.querySelectorAll('.seg button'),function(x){x.setAttribute('aria-pressed',x===b);});m=+b.dataset.m;run();});});
+run();
+document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();document.getElementById('fmsg').textContent='Preview only. Nothing was sent.';});
+})();
+</script>
+<a href="../../index.html#work" style="position:fixed;left:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#141414;color:#fff;font:500 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.2)">&larr; All work</a>
+</body>
+</html>
