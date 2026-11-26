@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AEON — daily nutrition, built from the cell up</title>
+<meta name="description" content="Three daily capsules for energy, focus and rest, at research-level doses and tested batch by batch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+html,body{background:#0B1711}
+:root{--bg:#0B1711;--bone:#EFEADF;--paper:#F4F0E6;--ink:#0E1B14;--f70:rgba(239,234,223,.72);--f50:rgba(239,234,223,.5);--line:rgba(239,234,223,.14);--iline:rgba(14,27,20,.14);--imute:#56635B;--amber:#D2912F;--sage:#6FA587;--slate:#5B7FA6;--d:"Fraunces",Georgia,serif;--b:"Geist",system-ui,sans-serif;--e:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;color:var(--bone);font-family:var(--b);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}p{margin:0}img{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--d);font-weight:300;margin:0;letter-spacing:-.025em;line-height:1;text-wrap:balance}
+.sky{position:fixed;inset:0;z-index:0;background:radial-gradient(60% 70% at 72% 42%,rgba(64,120,88,.38),rgba(11,23,17,0) 70%),radial-gradient(50% 50% at 10% 100%,rgba(210,145,47,.10),rgba(11,23,17,0) 70%),#0B1711}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:1;display:block;pointer-events:none;opacity:0;transition:opacity 1.4s var(--e)}
+#gl.on{opacity:1}
+.nogl #gl{display:none}
+.wrap{max-width:1400px;margin:0 auto;padding-left:clamp(20px,4vw,60px);padding-right:clamp(20px,4vw,60px)}
+.skip{position:absolute;left:12px;top:-60px;background:var(--bone);color:var(--ink);padding:10px 14px;border-radius:8px;z-index:100}.skip:focus{top:12px}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+header{position:fixed;top:0;left:0;right:0;z-index:30;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+header.solid{background:rgba(11,23,17,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;gap:20px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:600;font-size:17px;letter-spacing:.34em}
+.logo svg{width:16px;height:24px}
+header nav{display:flex;gap:30px;font-size:14.5px;color:var(--f70)}
+header nav a{position:relative;padding:6px 0;transition:color .2s}header nav a:hover{color:var(--bone)}
+header nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .4s var(--e)}
+header nav a:hover::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font:500 15px var(--b);border:1px solid var(--bone);background:var(--bone);color:var(--ink);cursor:pointer;transition:transform .15s,background .25s,color .25s,border-color .25s}
+.btn:hover{background:#fff;border-color:#fff}.btn:active{transform:translateY(1px) scale(.99)}
+.btn svg{width:14px;height:14px;transition:transform .3s var(--e)}.btn:hover svg{transform:translateX(3px)}
+.btn.line{background:transparent;color:var(--bone);border-color:rgba(239,234,223,.35)}.btn.line:hover{border-color:var(--bone);background:transparent}
+.btn.sm{min-height:40px;padding:0 18px;font-size:14px}
+.btn.dark{background:var(--ink);color:var(--bone);border-color:var(--ink)}.btn.dark:hover{background:#1B3226;border-color:#1B3226}
+main{position:relative;z-index:2}
+.stage>section{min-height:100svh;display:flex;align-items:center;padding-top:96px;padding-bottom:56px}
+.copy{max-width:560px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13.5px;color:var(--f70);margin-bottom:22px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--amber)}
+.hero .copy{max-width:660px}.hero h1{font-size:clamp(44px,5.5vw,86px);margin-bottom:26px}
+.lead{font-size:18px;color:var(--f70);max-width:460px}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
+.facts{display:flex;gap:40px;margin-top:48px;padding-top:22px;border-top:1px solid var(--line)}
+.facts b{display:block;font-family:var(--d);font-weight:300;font-size:30px;line-height:1.1}
+.facts span{font-size:13.5px;color:var(--f50)}
+[data-enter]>*{opacity:0;transform:translateY(18px);animation:in 1s var(--e) forwards}
+[data-enter]>*:nth-child(2){animation-delay:.1s}[data-enter]>*:nth-child(3){animation-delay:.2s}[data-enter]>*:nth-child(4){animation-delay:.3s}[data-enter]>*:nth-child(5){animation-delay:.4s}
+@keyframes in{to{opacity:1;transform:none}}
+.prod{justify-content:flex-end}.prod .copy{margin-left:auto}
+.stage h2{font-size:clamp(36px,4.4vw,68px);margin-bottom:20px}
+.doses{list-style:none;margin:30px 0 0;padding:0}
+.doses li{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:14px 0;border-top:1px solid var(--line)}
+.doses li:last-child{border-bottom:1px solid var(--line)}
+.doses b{font-weight:500}.doses span{font-variant-numeric:tabular-nums;color:var(--amber)}
+.doses small{grid-column:1/-1;font-size:14px;color:var(--f50)}
+.buy{display:flex;align-items:center;gap:22px;margin-top:28px;flex-wrap:wrap}
+.buy .pr{font-family:var(--d);font-size:34px;font-weight:300}.buy .pr small{font:400 14px var(--b);color:var(--f50);margin-left:6px}
+.range{flex-direction:column;justify-content:space-between;align-items:stretch!important;text-align:center}
+.range .top{max-width:760px;margin:0 auto}
+.range .eyebrow{justify-content:center}
+.tabs{display:inline-flex;gap:4px;padding:5px;border-radius:999px;border:1px solid var(--line);background:rgba(11,23,17,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.tabs button{border:0;background:none;color:var(--f70);font:500 14.5px var(--b);min-height:42px;padding:0 22px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
+.tabs button[aria-pressed=true]{background:var(--bone);color:var(--ink)}
+.pinfo{display:flex;justify-content:center;align-items:center;gap:30px;flex-wrap:wrap;margin-top:22px;min-height:60px}
+.pinfo .nm{font-family:var(--d);font-size:30px;font-weight:300}
+.pinfo .ds{color:var(--f70);max-width:400px;text-align:left}
+.pinfo .pr{font-family:var(--d);font-size:30px;font-weight:300}.pinfo .pr small{font:400 13.5px var(--b);color:var(--f50);margin-left:6px}
+/* paper part */
+.paper{position:relative;z-index:3;background:var(--paper);color:var(--ink)}
+.mq{overflow:hidden;padding:26px 0;border-bottom:1px solid var(--iline)}
+.mq+.mq{padding-top:0;margin-top:-6px}
+.mq div{display:flex;gap:56px;width:max-content;font-family:var(--d);font-weight:300;font-size:clamp(30px,3.6vw,54px);white-space:nowrap;animation:mq 46s linear infinite}
+.mq.rev div{animation-direction:reverse;font-style:italic;color:var(--imute)}
+.mq span{display:inline-flex;align-items:center;gap:56px}
+.mq span::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--amber)}
+.mq.rev span::after{background:var(--sage)}
+@keyframes mq{to{transform:translateX(-50%)}}
+section.s{padding-top:clamp(90px,12vh,140px);padding-bottom:clamp(90px,12vh,140px)}
+section.s+section.s{border-top:1px solid var(--iline)}
+.sh{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px 56px;align-items:end;margin-bottom:52px}
+.sh h2{font-size:clamp(36px,4.4vw,68px)}
+.sh p{color:var(--imute);max-width:420px}
+.ing{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--ink)}
+.ing>div{padding:22px 20px 6px 0;border-right:1px solid var(--iline)}
+.ing>div+div{padding-left:20px}.ing>div:last-child{border-right:0}
+.ing .n{font-size:13px;color:var(--imute);font-variant-numeric:tabular-nums}
+.ing .dose{font-family:var(--d);font-weight:300;font-size:clamp(34px,3.2vw,48px);line-height:1;margin:38px 0 14px}
+.ing h3{font:500 17px var(--b);letter-spacing:0;margin-bottom:6px}
+.ing p{font-size:14.5px;color:var(--imute)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;background:#FBF9F3;border:1px solid var(--iline);border-radius:20px;padding:28px;min-height:230px;display:flex;flex-direction:column}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--ink);font:500 15px var(--b);margin-bottom:auto}
+.steps h3{font-size:28px;margin:34px 0 8px}.steps p{color:var(--imute)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.plan{background:#FBF9F3;border:1px solid var(--iline);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:transform .35s var(--e),border-color .25s}
+.plan:hover{transform:translateY(-3px);border-color:rgba(14,27,20,.4)}
+.pimg{position:relative;aspect-ratio:4/3.6;background:color-mix(in srgb,var(--c) 16%,#F4F0E6);display:grid;place-items:center;overflow:hidden}
+.pimg img{position:absolute;top:-4%;left:50%;height:108%;width:auto;max-width:none;translate:-50% 0;transition:transform .7s var(--e)}
+.plan:hover .pimg img{transform:scale(1.04) rotate(-1.5deg)}
+.pimg .fb{font-family:var(--d);font-size:40px;color:var(--c)}
+.plan .in{padding:24px 26px 26px;display:flex;flex-direction:column;flex:1}
+.plan .t{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.plan h3{font-size:30px}.plan .when{font-size:13.5px;color:var(--imute)}
+.plan .w{color:var(--imute);margin:8px 0 20px}
+.plan .ft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:18px;border-top:1px solid var(--iline)}
+.plan .pr{font-family:var(--d);font-size:30px;font-weight:300}.plan .pr small{font:400 13.5px var(--b);color:var(--imute);margin-left:4px}
+.faq{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 64px}
+.faq h2{font-size:clamp(36px,4.4vw,68px)}
+details{border-top:1px solid var(--iline);padding:20px 0}details:last-child{border-bottom:1px solid var(--iline)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;font-size:18px;font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--imute);font-size:22px;line-height:1;transition:transform .3s var(--e)}details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--imute);margin-top:10px;max-width:600px}
+.cta{background:var(--bg);color:var(--bone);text-align:center;padding:clamp(100px,15vh,170px) 0 clamp(90px,13vh,140px);position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 50% 100%,rgba(64,120,88,.45),transparent 70%)}
+.cta .wrap{position:relative}
+.cta h2{font-size:clamp(44px,7vw,116px)}
+.cta p{color:var(--f70);margin:22px auto 30px;max-width:440px}
+.cta form{display:flex;gap:8px;max-width:470px;margin:0 auto;padding:6px;border-radius:999px;border:1px solid var(--line);background:rgba(239,234,223,.05)}
+.cta input{flex:1;min-width:0;background:none;border:0;color:var(--bone);font:400 16px var(--b);padding:0 18px}
+.cta input::placeholder{color:var(--f50)}.cta input:focus{outline:none}
+#msg{margin-top:14px;font-size:14px;color:var(--f50);min-height:1.4em}
+footer{background:var(--bg);color:var(--f50);font-size:13px;padding:0 0 34px;position:relative;z-index:3}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}
+footer p{max-width:700px}
+@media(max-width:940px){header nav{display:none}.stage>section{align-items:flex-end;padding-top:54svh}.prod .copy{margin-left:0}.stage .copy{background:rgba(11,23,17,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:22px;padding:22px;margin:0 -10px}.range{padding-top:100px!important}.pinfo .ds{text-align:center}.facts{gap:22px}.sh,.faq{grid-template-columns:1fr}.ing{grid-template-columns:1fr 1fr}.ing>div{border-right:0;border-bottom:1px solid var(--iline);padding:20px 12px 20px 0!important}.steps,.plans{grid-template-columns:1fr}.steps li{min-height:0}}
+@media(prefers-reduced-motion:reduce){[data-enter]>*{animation:none;opacity:1;transform:none}.mq div{animation:none}#gl{transition:none}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="sky" aria-hidden="true"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<header id="hd"><div class="wrap">
+  <a class="logo" href="#top"><svg viewBox="0 0 20 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 2c0 7 10 7 10 12S5 19 5 26"/><path d="M15 2c0 7-10 7-10 12s10 5 10 12"/><path d="M6.4 6h7.2M6.4 22h7.2" stroke="#D2912F"/></svg>AEON</a>
+  <nav aria-label="Main"><a href="#cell">Cell</a><a href="#range">Formulas</a><a href="#inside">Ingredients</a><a href="#plans">Shop</a></nav>
+  <a class="btn sm line" href="#plans">Shop AEON</a>
+</div></header>
+
+<main id="main">
+<div class="stage" id="top">
+  <section class="hero wrap" data-ph="0">
+    <div class="copy" data-enter>
+      <span class="eyebrow">Cellular nutrition</span>
+      <h1>Daily nutrition, built from the cell up.</h1>
+      <p class="lead">Three capsules for the three things your cells do all day: make energy, stay sharp and rest. Research-level doses, tested batch by batch.</p>
+      <div class="ctas"><a class="btn" href="#range">Find your formula <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn line" href="#cell">See what's inside</a></div>
+      <div class="facts"><div><b>3</b><span>daily formulas</span></div><div><b>0</b><span>fillers or dyes</span></div><div><b>100%</b><span>of batches lab-tested</span></div></div>
+    </div>
+  </section>
+
+  <section class="prod wrap" id="cell" data-ph="1">
+    <div class="copy">
+      <span class="eyebrow">AEON Cell, formula 01</span>
+      <h2>One capsule. Five compounds.</h2>
+      <p class="lead">Cell is the morning formula. Everything in it is on the label, with its form and its dose.</p>
+      <ul class="doses">
+        <li><b>NMN</b><span>500 mg</span></li>
+        <li><b>Trans-resveratrol</b><span>250 mg</span></li>
+        <li><b>Ubiquinol (CoQ10)</b><span>100 mg</span></li>
+        <li><b>Astaxanthin</b><span>12 mg</span></li>
+        <li><b>Spermidine</b><span>6 mg</span></li>
+      </ul>
+      <div class="buy"><span class="pr">€59<small>per month</small></span><a class="btn" href="#plans">Add Cell to cart</a></div>
+    </div>
+  </section>
+
+  <section class="range wrap" id="range" data-ph="2">
+    <div class="top"><span class="eyebrow">The range</span><h2>Three formulas for one day.</h2></div>
+    <div>
+      <div class="tabs" role="group" aria-label="Formula"><button aria-pressed="true" data-f="0">Cell</button><button aria-pressed="false" data-f="1">Focus</button><button aria-pressed="false" data-f="2">Night</button></div>
+      <div class="pinfo"><span class="nm" id="pn">AEON Cell</span><p class="ds" id="pd">Morning. NMN, resveratrol, ubiquinol, astaxanthin and spermidine, with breakfast.</p><span class="pr" id="pp">€59<small>per month</small></span></div>
+    </div>
+  </section>
+</div>
+
+<div class="paper">
+  <div class="mq" aria-hidden="true"><div><span>NMN</span><span>Trans-resveratrol</span><span>Ubiquinol</span><span>Astaxanthin</span><span>Spermidine</span><span>Citicoline</span><span>NMN</span><span>Trans-resveratrol</span><span>Ubiquinol</span><span>Astaxanthin</span><span>Spermidine</span><span>Citicoline</span></div></div>
+  <div class="mq rev" aria-hidden="true"><div><span>L-theanine</span><span>Rhodiola rosea</span><span>Magnesium glycinate</span><span>Glycine</span><span>Apigenin</span><span>L-theanine</span><span>Rhodiola rosea</span><span>Magnesium glycinate</span><span>Glycine</span><span>Apigenin</span></div></div>
+
+  <section class="s" id="inside"><div class="wrap">
+    <div class="sh"><h2>What is in Cell, and why it is there.</h2><p>No proprietary blends. Five compounds, each in the form and at the dose used in human studies.</p></div>
+    <div class="ing">
+      <div><span class="n">01</span><div class="dose">500 mg</div><h3>NMN</h3><p>A precursor of NAD+, the molecule cells use to turn food into energy.</p></div>
+      <div><span class="n">02</span><div class="dose">250 mg</div><h3>Trans-resveratrol</h3><p>A polyphenol found in grape skin, often studied alongside NMN.</p></div>
+      <div><span class="n">03</span><div class="dose">100 mg</div><h3>Ubiquinol</h3><p>The active form of CoQ10, part of how mitochondria produce energy.</p></div>
+      <div><span class="n">04</span><div class="dose">12 mg</div><h3>Astaxanthin</h3><p>An antioxidant carotenoid sourced from microalgae.</p></div>
+      <div><span class="n">05</span><div class="dose">6 mg</div><h3>Spermidine</h3><p>Studied for its role in autophagy, the way cells recycle worn parts.</p></div>
+    </div>
+  </div></section>
+
+  <section class="s"><div class="wrap">
+    <div class="sh"><h2>Three steps, then it runs itself.</h2><p>Start with one formula or take all three. Change, pause or cancel in two taps.</p></div>
+    <ol class="steps">
+      <li><h3>Choose a formula</h3><p>Cell for the morning, Focus for the working day, Night for the evening.</p></li>
+      <li><h3>Take one a day</h3><p>One capsule with water. Each bottle holds sixty, enough for two months of a single formula.</p></li>
+      <li><h3>Refill by post</h3><p>Refills arrive in a paper pouch. Pour them into the same bottle and recycle the pouch.</p></li>
+    </ol>
+  </div></section>
+
+  <section class="s" id="plans"><div class="wrap">
+    <div class="sh"><h2>Choose your formula.</h2><p>Free delivery on subscriptions. Thirty days to try each formula, or your money back.</p></div>
+    <div class="plans">
+      <article class="plan" style="--c:#B27A22"><div class="pimg"><img data-b="0" alt="AEON Cell, an amber bottle with a bone cap" hidden><span class="fb">Cell</span></div><div class="in"><div class="t"><h3>Cell</h3><span class="when">Morning</span></div><p class="w">The cellular formula: NMN, resveratrol, ubiquinol, astaxanthin and spermidine.</p><div class="ft"><span class="pr">€59<small>/ month</small></span><button class="btn dark sm add">Add to cart</button></div></div></article>
+      <article class="plan" style="--c:#4F8468"><div class="pimg"><img data-b="1" alt="AEON Focus, a sage green bottle with a bone cap" hidden><span class="fb">Focus</span></div><div class="in"><div class="t"><h3>Focus</h3><span class="when">Midday</span></div><p class="w">For the working day: citicoline, L-theanine and rhodiola rosea.</p><div class="ft"><span class="pr">€45<small>/ month</small></span><button class="btn dark sm add">Add to cart</button></div></div></article>
+      <article class="plan" style="--c:#3F6088"><div class="pimg"><img data-b="2" alt="AEON Night, a slate blue bottle with a bone cap" hidden><span class="fb">Night</span></div><div class="in"><div class="t"><h3>Night</h3><span class="when">Evening</span></div><p class="w">For the hour before bed: magnesium glycinate, glycine and apigenin.</p><div class="ft"><span class="pr">€39<small>/ month</small></span><button class="btn dark sm add">Add to cart</button></div></div></article>
+    </div>
+  </div></section>
+
+  <section class="s"><div class="wrap faq">
+    <h2>Questions.</h2>
+    <div>
+      <details open><summary>How is each batch tested?</summary><p>An independent laboratory tests every batch for purity, heavy metals and microbes before it ships. The certificate number is printed on the bottle.</p></details>
+      <details><summary>Can I take all three formulas?</summary><p>Yes. They share no ingredients, so the doses do not stack: Cell in the morning, Focus at midday, Night in the evening.</p></details>
+      <details><summary>Is this medical advice?</summary><p>No. AEON makes food supplements, not medicines. If you are pregnant, take medication or have a health condition, ask your doctor first.</p></details>
+    </div>
+  </div></section>
+
+  <section class="cta" id="start"><div class="wrap">
+    <h2>Start with one capsule.</h2>
+    <p>15% off your first month. Leave your email and the code arrives in a minute.</p>
+    <form id="f"><input type="email" required placeholder="Email address" aria-label="Email address" autocomplete="email"><button class="btn" type="submit">Send my code</button></form>
+    <p id="msg" role="status"></p>
+  </div></section>
+</div>
+</main>
+<footer><div class="wrap"><span>&copy; 2026 AEON</span><p>Concept website. AEON is a fictional brand; products, doses and prices are illustrative. Food supplements are not a substitute for a varied diet and are not intended to diagnose, treat or prevent any disease.</p></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script>
+window.__lenis=null;if(window.Lenis&&!matchMedia('(prefers-reduced-motion: reduce)').matches){window.__lenis=new Lenis({lerp:.09,anchors:true});}
+window.__F=[
+ {n:'Cell',no:'01',c:'#B27A22',tag:'Daily cellular formula',d:'Morning. NMN, resveratrol, ubiquinol, astaxanthin and spermidine, with breakfast.',p:'€59',ing:['NMN 500 mg','Trans-resveratrol 250 mg','Ubiquinol 100 mg','Astaxanthin 12 mg','Spermidine 6 mg']},
+ {n:'Focus',no:'02',c:'#4F8468',tag:'Daily focus formula',d:'Midday. Citicoline, L-theanine and rhodiola rosea, mid-morning or after lunch.',p:'€45',ing:['Citicoline 250 mg','L-theanine 200 mg','Rhodiola rosea 200 mg']},
+ {n:'Night',no:'03',c:'#3F6088',tag:'Daily evening formula',d:'Evening. Magnesium glycinate, glycine and apigenin, an hour before bed.',p:'€39',ing:['Magnesium glycinate 300 mg','Glycine 1 g','Apigenin 50 mg']}];
+window.__sel=0;
+(function(){
+ var hd=document.getElementById('hd');addEventListener('scroll',function(){hd.classList.toggle('solid',scrollY>40);},{passive:true});
+ [].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){[].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-pressed',x===b);});var i=+b.dataset.f,f=window.__F[i];window.__sel=i;document.getElementById('pn').textContent='AEON '+f.n;document.getElementById('pd').textContent=f.d;document.getElementById('pp').innerHTML=f.p+'<small>per month</small>';});});
+ [].forEach.call(document.querySelectorAll('.add'),function(b){b.addEventListener('click',function(){b.textContent='Added';setTimeout(function(){b.textContent='Add to cart';},1400);});});
+ document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();document.getElementById('msg').textContent='Preview only. Nothing was sent.';});
+})();
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=document.getElementById('gl');
+let renderer=null;try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'});}catch(e){}
+if(!renderer){document.documentElement.classList.add('nogl');if(window.__lenis){(function raf(t){window.__lenis.raf(t);requestAnimationFrame(raf);})(performance.now());}}
+else{
+const q=parseFloat(new URLSearchParams(location.search).get('q'))||1;
+const PR=Math.min(devicePixelRatio||1,2)*q;renderer.setPixelRatio(PR);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();const FOG=new THREE.Fog(0x0D1C14,8,15.5);scene.fog=FOG;
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;
+const cam=new THREE.PerspectiveCamera(30,1,.1,60);cam.position.set(0,0,9);
+const key=new THREE.DirectionalLight(0xfff0dc,2.4);key.position.set(3,5,6);scene.add(key);
+const fill=new THREE.DirectionalLight(0x9fd6b6,.7);fill.position.set(-6,-1,3);scene.add(fill);
+const rim=new THREE.DirectionalLight(0xffffff,1.3);rim.position.set(-2,3,-6);scene.add(rim);
+
+/* ---- DNA: space-filling model of the B form (right-handed, 10.5 base pairs a turn, real groove widths) ---- */
+const RR=.74,U=RR/8.9,RISE=3.38*U,NB=40,TW=34.3*Math.PI/180,DEG=Math.PI/180;
+const helix=new THREE.Group(),hIn=new THREE.Group();helix.add(hIn);scene.add(helix);
+const boneM=new THREE.MeshPhysicalMaterial({color:0xEDE6D6,roughness:.36,clearcoat:.6,clearcoatRoughness:.25,envMapIntensity:.85});
+const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),S=new THREE.Vector3();
+{let seed=11;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+ const cC=new THREE.Color(0xDAD2C0),cP=new THREE.Color(0xD6C59E),cO=new THREE.Color(0xC9BB9C);
+ const BASE={A:new THREE.Color(0xD2912F),T:new THREE.Color(0xE8C97F),G:new THREE.Color(0x74AD8B),C:new THREE.Color(0x3D7A5C)};
+ const at=[];
+ const put=(r,phi,z,th,y0,rad,col)=>{const a=th+phi,j=.22,ao=.34+.66*Math.pow(Math.min(1,Math.max(0,(r-1)/8)),1.15);
+  at.push((r*Math.sin(a)+(rnd()-.5)*j)*U,y0+(z+(rnd()-.5)*j)*U,(r*Math.cos(a)+(rnd()-.5)*j)*U,rad*U,col.r*ao,col.g*ao,col.b*ao);};
+ const PAIRS=['AT','TA','GC','CG','GC','AT'];
+ for(let i=0;i<NB;i++){const th=i*TW,y0=(i-(NB-1)/2)*RISE;
+  for(const s of [1,-1]){
+   put(8.9,s*95*DEG,s*2.2,th,y0,1.9,cP);put(10.1,s*93*DEG,s*3.05,th,y0,1.5,cO);put(9.4,s*104*DEG,s*1.3,th,y0,1.5,cO);
+   put(8.4,s*87*DEG,s*1.5,th,y0,1.5,cO);put(7.9,s*79*DEG,s*.95,th,y0,1.7,cC);
+   for(let k=0;k<5;k++){const g=k*72*DEG;put(7.3+.8*Math.cos(g),s*(70*DEG+1.2*Math.sin(g)/7.3),s*(.3+.85*Math.cos(g)),th,y0,1.65,k===2?cO:cC);}
+   put(8.1,s*65.4*DEG,s*-.45,th,y0,1.5,cO);}
+  const pr=PAIRS[Math.floor(rnd()*PAIRS.length)],pur=(pr[0]==='A'||pr[0]==='G'),seam=pur?-.62:.62;
+  for(let r=0;r<8;r++)for(let c=0;c<4;c++){let y=(r-3.5)*1.24,x=-3+c*1.4+(r%2?.7:0);
+   if((x>1.25&&Math.abs(y)<1.9)||(x<-2.5&&Math.abs(y)>3.6))continue;
+   const up=y>seam;y+=up?.34:-.34;const tilt=(up?1:-1)*(x+.5)*.09;
+   put(Math.hypot(x,y),Math.atan2(y,x),tilt,th,y0,1.62,BASE[up?pr[0]:pr[1]]);}}
+ const n=at.length/7,low=innerWidth<940;
+ const dna=new THREE.InstancedMesh(new THREE.SphereGeometry(1,low?12:18,low?9:13),new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.5,clearcoat:.3,clearcoatRoughness:.45,envMapIntensity:.55}),n);
+ const col=new THREE.Color();
+ for(let i=0;i<n;i++){const o=i*7;V.set(at[o],at[o+1],at[o+2]);S.setScalar(at[o+3]);M.compose(V,Q,S);dna.setMatrixAt(i,M);dna.setColorAt(i,col.setRGB(at[o+4],at[o+5],at[o+6]));}
+ dna.castShadow=true;dna.receiveShadow=true;dna.frustumCulled=false;hIn.add(dna);window.__dna=dna;
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ key.position.set(4.5,7.5,9);key.castShadow=true;key.shadow.mapSize.set(low?1024:2048,low?1024:2048);
+ const sc=key.shadow.camera;sc.left=-8;sc.right=8;sc.top=8;sc.bottom=-8;sc.near=.5;sc.far=40;sc.updateProjectionMatrix();
+ key.shadow.bias=-.0006;key.shadow.normalBias=.035;key.shadow.radius=4;}
+
+/* ---- branded bottles ---- */
+const F=window.__F,LW=2048,LH=782;
+function mark(g,cx,cy,h,col,acc){const w=h*.3;g.lineCap='round';g.lineWidth=h*.065;
+ [1,-1].forEach(s=>{g.strokeStyle=col;g.beginPath();for(let k=0;k<=40;k++){const t=k/40,x=cx+Math.cos(t*Math.PI*2)*w*s,y=cy-h/2+t*h;k?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();});
+ g.strokeStyle=acc;[.14,.86].forEach(t=>{const x=Math.cos(t*Math.PI*2)*w*.72;g.beginPath();g.moveTo(cx-x,cy-h/2+t*h);g.lineTo(cx+x,cy-h/2+t*h);g.stroke();});}
+function spaced(g,txt,cx,y,sp){let w=0;const ws=[...txt].map(c=>g.measureText(c).width);w=ws.reduce((a,b)=>a+b,0)+sp*(txt.length-1);let x=cx-w/2;g.textAlign='left';[...txt].forEach((c,i)=>{g.fillText(c,x,y);x+=ws[i]+sp;});g.textAlign='center';}
+function drawLabel(g,f){const bone='#F1ECE0';g.fillStyle=f.c;g.fillRect(0,0,LW,LH);
+ g.fillStyle=bone;g.fillRect(0,46,LW,3);g.fillRect(0,LH-49,LW,3);
+ const cx=LW/2;mark(g,cx,150,120,bone,'#0E1B14');
+ g.fillStyle=bone;g.textAlign='center';g.textBaseline='alphabetic';
+ g.font='600 150px Geist, Arial, sans-serif';spaced(g,'AEON',cx,396,30);
+ g.font='italic 300 100px Fraunces, Georgia, serif';g.fillText(f.n,cx,520);
+ g.font='500 24px Geist, Arial, sans-serif';spaced(g,(f.tag+'  /  '+f.no).toUpperCase(),cx,606,3);
+ g.font='400 26px Geist, Arial, sans-serif';g.globalAlpha=.85;g.fillText('60 capsules. Food supplement.',cx,660);
+ g.textAlign='left';g.font='500 26px Geist, Arial, sans-serif';g.fillText('IN EACH CAPSULE',cx+520,300);g.font='400 27px Geist, Arial, sans-serif';f.ing.forEach((s,i)=>g.fillText(s,cx+520,350+i*42));
+ g.textAlign='right';g.font='500 26px Geist, Arial, sans-serif';g.fillText('DIRECTIONS',cx-520,300);g.font='400 27px Geist, Arial, sans-serif';['One capsule a day','with water.','Store in a cool, dry place.','Batch tested by an','independent laboratory.'].forEach((s,i)=>g.fillText(s,cx-520,350+i*42));
+ g.globalAlpha=1;}
+const capM=new THREE.MeshPhysicalMaterial({color:0xEEE8DA,roughness:.42,clearcoat:.5,clearcoatRoughness:.3,envMapIntensity:.8});
+const bottles=[],labels=[];
+F.forEach((f,i)=>{const g=new THREE.Group(),inner=new THREE.Group();inner.position.y=-.2;g.add(inner);
+ const c=document.createElement('canvas');c.width=LW;c.height=LH;const ctx=c.getContext('2d');drawLabel(ctx,f);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;tex.wrapS=THREE.RepeatWrapping;tex.offset.x=.5;labels.push({ctx,tex,f});
+ const bm=new THREE.MeshPhysicalMaterial({color:0xffffff,map:tex,roughness:.5,clearcoat:.35,clearcoatRoughness:.35,envMapIntensity:.75});
+ const sm=new THREE.MeshPhysicalMaterial({color:new THREE.Color(f.c),roughness:.5,clearcoat:.35,clearcoatRoughness:.35,envMapIntensity:.75});
+ inner.add(new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,1.2,96,1,true),bm));
+ const base=[[0,-.72],[.4,-.72],[.46,-.705],[.49,-.67],[.5,-.62],[.5,-.598]].map(p=>new THREE.Vector2(p[0],p[1]));
+ const sh=[[.5,.598],[.5,.63],[.485,.69],[.44,.745],[.38,.775],[.335,.785],[.335,.84]].map(p=>new THREE.Vector2(p[0],p[1]));
+ inner.add(new THREE.Mesh(new THREE.LatheGeometry(base,96),sm),new THREE.Mesh(new THREE.LatheGeometry(sh,96),sm));
+ const cap=[[.0,.83],[.37,.83],[.375,.845],[.375,1.11],[.36,1.145],[.33,1.155],[0,1.155]].map(p=>new THREE.Vector2(p[0],p[1]));
+ inner.add(new THREE.Mesh(new THREE.LatheGeometry(cap,96),capM));
+ scene.add(g);bottles.push(g);});
+
+/* product stills for the shop cards, rendered from the same bottles */
+function snaps(){const imgs=[...document.querySelectorAll('img[data-b]')];if(!imgs.length)return;
+ scene.fog=null;helix.visible=false;renderer.setPixelRatio(1);renderer.setSize(720,900,false);
+ const c2=new THREE.PerspectiveCamera(24,.8,.1,30);c2.position.set(0,.05,6.4);c2.lookAt(0,0,0);
+ bottles.forEach((b,i)=>{bottles.forEach((o,j)=>o.visible=j===i);b.position.set(0,0,0);b.scale.setScalar(1.12);b.rotation.set(.05,-.3,0);renderer.render(scene,c2);
+  let url='';try{url=cv.toDataURL('image/png');}catch(e){}
+  if(url.length>2000)imgs.filter(m=>+m.dataset.b===i).forEach(m=>{m.src=url;m.hidden=false;const fb=m.parentNode.querySelector('.fb');if(fb)fb.remove();});});
+ bottles.forEach(o=>o.visible=true);helix.visible=true;scene.fog=FOG;renderer.setPixelRatio(PR);size();}
+
+let mob=false,W=1,H=1;
+function size(){W=innerWidth;H=innerHeight;mob=W<940;renderer.setSize(W,H,false);cam.aspect=W/H;cam.fov=mob?40:30;cam.updateProjectionMatrix();}
+addEventListener('resize',size);size();
+
+/* keyframes per scroll phase: helix [x,y,z,rotZ,scale]; bottle [x,y,z,scale] */
+const KD={h:[[2.1,0,0,-.42,.84],[-1.95,.15,-3.4,.36,.95],[0,.15,-4.4,1.5708,1.1]],
+ b:[[[2.1,-3.8,0,.9],[-1.8,-.05,.6,1.3],[-1.75,-.12,0,.9]],[[0,-4.4,0,.9],[0,-4.4,0,.9],[0,-.12,0,.9]],[[1.75,-5,0,.9],[1.75,-5,0,.9],[1.75,-.12,0,.9]]]};
+const KM={h:[[.15,1.55,0,-.5,.6],[0,1.6,-3.2,.36,.7],[0,.5,-4,1.5708,.7]],
+ b:[[[0,-6,0,.6],[0,1.72,.3,.84],[-1.0,.42,0,.54]],[[0,-6,0,.54],[0,-6,0,.54],[0,.42,0,.54]],[[1.0,-6,0,.54],[1.0,-6,0,.54],[1.0,.42,0,.54]]]};
+const secs=[...document.querySelectorAll('[data-ph]')],mid=s=>s.offsetTop+s.offsetHeight/2;
+function tph(){const c=scrollY+innerHeight/2,n=secs.length;if(c<=mid(secs[0]))return 0;for(let i=0;i<n-1;i++){const a=mid(secs[i]),b=mid(secs[i+1]);if(c<b){let t=(c-a)/(b-a);t=Math.max(0,Math.min(1,(t-.1)/.8));return i+t*t*(3-2*t);}}return n-1;}
+let fc=0,ft=0,guard=new URLSearchParams(location.search).get('s')!=='1';
+let ph=0,last=performance.now(),t0=last,on=false,mx=0,my=0,tx=0,ty=0;const selS=[1,1,1];
+addEventListener('pointermove',e=>{tx=e.clientX/W-.5;ty=e.clientY/H-.5;});
+const paper=document.querySelector('.paper');
+function frame(now){
+ requestAnimationFrame(frame);if(window.__lenis)window.__lenis.raf(now);
+ const raw=Math.min(120,now-last),dt=Math.min(.05,raw/1000);last=now;const t=reduce?0:(now-t0)/1000;
+ if(paper.getBoundingClientRect().top<-60)return;
+ ph+=(tph()-ph)*(reduce?1:1-Math.exp(-dt*4.5));mx+=(tx-mx)*(1-Math.exp(-dt*3));my+=(ty-my)*(1-Math.exp(-dt*3));
+ const K=mob?KM:KD,i0=Math.min(1,Math.floor(ph)),f=Math.min(1,Math.max(0,ph-i0)),L=(a,j)=>a[i0][j]+(a[i0+1][j]-a[i0][j])*f;
+ helix.position.set(L(K.h,0),L(K.h,1)+Math.sin(t*.5)*.05,L(K.h,2));helix.rotation.z=L(K.h,3);helix.rotation.x=my*.12;helix.scale.setScalar(L(K.h,4));
+ hIn.rotation.y=t*.28+scrollY*.0018+mx*.6;
+ const w2=Math.max(0,Math.min(1,ph-1));
+ bottles.forEach((b,i)=>{const a=K.b[i];const tg=1+(i===window.__sel?.14:-.08)*w2;selS[i]+=(tg-selS[i])*(1-Math.exp(-dt*6));
+  b.position.set(L(a,0),L(a,1)+Math.sin(t*.9+i*1.7)*.035+(selS[i]-1)*.6,L(a,2)+(selS[i]-1)*2);b.scale.setScalar(L(a,3)*selS[i]);
+  b.rotation.set(my*.1,mx*.45+Math.sin(t*.45+i*1.3)*.14+(ph-1)*-.95*(1-w2)+(1-i)*-.16*w2,-.05*(1-w2)*(i===0?1:0));});
+ renderer.render(scene,cam);
+ if(guard){fc++;if(fc>6)ft+=raw;if(fc===46){guard=false;if(ft/40>30){key.castShadow=false;renderer.setPixelRatio(Math.min(PR,1.25));size();}}}
+ if(!on){on=true;requestAnimationFrame(()=>cv.classList.add('on'));}
+}
+function start(){labels.forEach(l=>{drawLabel(l.ctx,l.f);l.tex.needsUpdate=true;});try{snaps();}catch(e){}requestAnimationFrame(frame);}
+const fl=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('600 176px Geist'),document.fonts.load('400 28px Geist'),document.fonts.load('italic 300 104px Fraunces')]):Promise.resolve();
+Promise.race([fl,new Promise(r=>setTimeout(r,2200))]).then(start,start);
+}
+</script>
+<a href="../../index.html#work" style="position:fixed;left:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#141414;color:#fff;font:500 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.2)">&larr; All work</a>
+</body>
+</html>
